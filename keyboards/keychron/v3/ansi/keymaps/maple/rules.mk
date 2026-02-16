@@ -1,0 +1,8 @@
+CONSOLE_ENABLE = yes
+SRC += common.c
+SRC += engine/script_engine.c
+SRC += engine/timing.c
+SRC += scripts/marksman/job.c
+SRC += scripts/marksman/rotation_script.c
+SRC += scripts/marksman/setup_script.c
+SRC += scripts/marksman/buff_script.c
