@@ -15,6 +15,8 @@
  */
 
 #include QMK_KEYBOARD_H
+#include "print.h"
+#include "timer.h"
 
 // clang-format off
 
