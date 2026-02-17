@@ -95,7 +95,7 @@ bool janus3(void) { return cooldown_tap(&cd_janus3, JANUS_CD_MS, JANUS_KEY); }
 // Activation: press DOWN, tap X, tap X, wait 600 ms, release DOWN.
 // Cooldown: 30–45 s (random).  Blocks for 600 ms when it fires.
 
-#define TELEPORT_SETUP_CD_MS    45000   // max; range 67–100% => 30–45 s
+#define TELEPORT_SETUP_CD_MS    35000   // max; range 67–100% => 30–45 s
 
 static uint32_t cd_teleport_setup = 0;
 
@@ -104,10 +104,12 @@ bool teleport_setup(void) {
     if (!timer_expired32(now, cd_teleport_setup)) return false;
 
     register_code(KC_DOWN);
-    wait_ms(jitter(55, 20));
-    tap_code_delay(KC_X, jitter(30, 20));
-    wait_ms(jitter(55, 20));
-    tap_code_delay(KC_X, jitter(30, 20));
+    wait_ms(jitter(100, 20));
+    tap_code_delay(KC_X, jitter(60, 20));
+    wait_ms(jitter(60, 20));
+    tap_code_delay(KC_X, jitter(60, 20));
+    wait_ms(jitter(60, 20));
+    tap_code_delay(KC_X, jitter(60, 20));
     wait_ms(jitter(70, 20));
     unregister_code(KC_DOWN);
 

@@ -5,3 +5,7 @@
 #include "../../engine/script_engine.h"
 
 extern const cmd_t SETUP_SCRIPT[];
+
+extern const cmd_t SETUP_CERNIUM[];
+
+extern const cmd_t SETUP_ODIUM[];

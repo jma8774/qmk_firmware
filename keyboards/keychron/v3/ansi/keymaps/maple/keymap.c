@@ -106,9 +106,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 // RUN ON
                 uprintf("Running...\n");
                 running            = true;
-                last_setup_time_ms = timer_read32();
-                last_buff_time_ms  = timer_read32();
-                runner_start(&runner, ROTATION_NORMAL, MODE_ROTATION);
+                runner_start(&runner, BUFF_SCRIPT, MODE_ROTATION);
             }
             return false;  // no OS key output
         case KC_F8:
@@ -126,16 +124,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // ---------------------------------------------------------------------------
 // matrix_scan_user  –  policy layer (called every ~1 ms)
 // ---------------------------------------------------------------------------
-static uint32_t last_print_time_ms = 0;
-static void scan_print(const char *message) {
-    if (timer_elapsed32(last_print_time_ms) >= 1000) {
-        last_print_time_ms = timer_read32();
-        uprintf("[scan] %s\n", message);
-    }
-}
+// static uint32_t last_print_time_ms = 0;
+// static void scan_print(const char *message) {
+//     if (timer_elapsed32(last_print_time_ms) >= 1000) {
+//         last_print_time_ms = timer_read32();
+//         uprintf("[scan] %s\n", message);
+//     }
+// }
 void matrix_scan_user(void) {
     if (!running) {
-        scan_print("Not running, returning\n");
         return;
     }
 
@@ -149,23 +146,33 @@ void matrix_scan_user(void) {
 
     // Script just finished — decide what comes next
     if (runner.mode == MODE_ROTATION) {
-        if (timer_elapsed32(last_setup_time_ms) >= random_range(SETUP_INTERVAL_MS, 70, 100))  {
+        // Real bot
+        // if (timer_elapsed32(last_setup_time_ms) >= random_range(SETUP_INTERVAL_MS, 70, 100))  {
+        //     uprintf("\n");
+        //     uprintf("[scan] rotation -> setup (interval elapsed)\n");
+        //     runner_start(&runner, SETUP_CERNIUM, MODE_SETUP);
+        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= 53000)  {
+            uprintf("\n");
             uprintf("[scan] rotation -> setup (interval elapsed)\n");
-            runner_start(&runner, SETUP_SCRIPT, MODE_SETUP);
+            runner_start(&runner, SETUP_ODIUM, MODE_SETUP);
         } else if (timer_elapsed32(last_buff_time_ms) >= random_range(BUFF_INTERVAL_MS, 70, 100)) {
+            uprintf("\n");
             uprintf("[scan] rotation -> buff (interval elapsed)\n");
             runner_start(&runner, BUFF_SCRIPT, MODE_BUFF);
         } else {
+            uprintf("\n");
             uprintf("[scan] rotation -> rotation (continue)\n");
-            runner_start(&runner, ROTATION_NORMAL, MODE_ROTATION);
+            runner_start(&runner, ROTATION_ODIUM, MODE_ROTATION);
         }
     } else if (runner.mode == MODE_SETUP) {
+        uprintf("\n");
         uprintf("[scan] setup done -> rotation\n");
         last_setup_time_ms = timer_read32();
-        runner_start(&runner, ROTATION_NORMAL, MODE_ROTATION);
+        runner_start(&runner, ROTATION_ODIUM, MODE_ROTATION);
     } else if (runner.mode == MODE_BUFF) {
+        uprintf("\n");
         uprintf("[scan] buff done -> rotation\n");
         last_buff_time_ms = timer_read32();
-        runner_start(&runner, ROTATION_NORMAL, MODE_ROTATION);
+        runner_start(&runner, ROTATION_ODIUM, MODE_ROTATION);
     }
 }

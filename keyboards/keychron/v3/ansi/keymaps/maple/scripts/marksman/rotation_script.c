@@ -9,3 +9,31 @@ const cmd_t ROTATION_NORMAL[] = {
     WAIT_JITTER(5000, 15),
     END(),
 };
+
+const cmd_t ROTATION_PS_RIGHT[] = {
+    JUMP_ATTACK_DELAY(100, 50),
+    JUMP_ATTACK_DELAY(100, 50),
+    JUMP_ATTACK_DELAY(100, 50),
+    JUMP_ATTACK_DELAY(100, 50),
+    JUMP_ATTACK_DELAY(100, 50),
+    TELEPORT_RESET(),
+    END(),
+};
+
+const cmd_t ROTATION_CERNIUM[] = {
+    TRY_BOLT_BURST(),
+    SHOOT(),
+    WAIT_JITTER(700, 15),
+    END(),
+};
+
+const cmd_t ROTATION_ODIUM[] = {
+    JUMP_ATTACK(),
+    JUMP_ATTACK(),
+    JUMP_ATTACK(),
+    JUMP_ATTACK(),
+    JUMP_ATTACK(),
+    JUMP_ATTACK(),
+    TELEPORT_RESET(),
+    END(),
+};

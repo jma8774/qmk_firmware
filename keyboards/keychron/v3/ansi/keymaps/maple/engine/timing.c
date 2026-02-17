@@ -39,6 +39,44 @@ uint32_t jitter(uint32_t base_ms, uint8_t pct) {
 }
 
 // ---------------------------------------------------------------------------
+// jitter_down
+// ---------------------------------------------------------------------------
+// Returns base_ms minus a random offset in [0, pct% of base_ms]. Result is
+// in [base_ms * (1 - pct/100), base_ms], never over base_ms.
+//
+// Example: jitter_down(1000, 20) returns a value in [800, 1000].
+
+uint32_t jitter_down(uint32_t base_ms, uint8_t pct) {
+    if (pct == 0) return base_ms;
+    if (pct > 100) pct = 100;
+
+    uint32_t max_offset = base_ms * pct / 100;
+    if (max_offset == 0) return base_ms;
+
+    uint32_t offset = (uint32_t)rand() % (max_offset + 1);  // 0..max_offset inclusive
+    return base_ms - offset;
+}
+
+// ---------------------------------------------------------------------------
+// jitter_up
+// ---------------------------------------------------------------------------
+// Returns base_ms plus a random offset in [0, pct% of base_ms]. Result is
+// in [base_ms, base_ms + base_ms*pct/100], never under base_ms.
+//
+// Example: jitter_up(1000, 20) returns a value in [1000, 1200].
+
+uint32_t jitter_up(uint32_t base_ms, uint8_t pct) {
+    if (pct == 0) return base_ms;
+    if (pct > 100) pct = 100;
+
+    uint32_t max_offset = base_ms * pct / 100;
+    if (max_offset == 0) return base_ms;
+
+    uint32_t offset = (uint32_t)rand() % (max_offset + 1);  // 0..max_offset inclusive
+    return base_ms + offset;
+}
+
+// ---------------------------------------------------------------------------
 // timing_chance
 // ---------------------------------------------------------------------------
 // Returns true with probability pct/100.  pct 0 => always false, pct 100 => always true.
