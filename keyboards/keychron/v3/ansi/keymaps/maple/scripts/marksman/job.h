@@ -9,18 +9,20 @@
 // Stateless actions
 // ---------------------------------------------------------------------------
 
-#define SHOOT()                  TAP(KC_Q), WAIT_JITTER_UP_D(530)
+#define SHOOT()                  TAP(KC_Q), WAIT_JITTER_UP_D(600)
 #define ROPE()                   TAP(KC_C), WAIT_JITTER_UP_D(1600)
 #define ROPE_DELAY(ms)           TAP(KC_C), WAIT_JITTER_D(ms)
-#define DASH()                   TAP(KC_LALT), WAIT_JITTER_UP(570, 5)
+#define DASH()                   TAP(KC_LALT), WAIT_JITTER_UP(600, 5)
+#define DASH_SKIPS_COUNT        2
 #define JUMP()                   TAP(KC_E)
 #define TELEPORT_RESET()         TAP(KC_X), WAIT_JITTER_D(60), TAP(KC_X), WAIT_JITTER_D(60), TAP(KC_X), WAIT_JITTER_UP_D(650)
 
-#define FLASH_JUMP()             TAP(KC_E), WAIT_JITTER_UP(600, 5)
+#define FLASH_JUMP()             TAP(KC_E), WAIT_JITTER_UP_D(70), TAP(KC_E), WAIT_JITTER_UP(580, 5)
 
 #define JUMP_ATTACK()            TAP(KC_E), WAIT_JITTER_UP_D(70),  \
                                  TAP(KC_E), WAIT_JITTER_D(200), \
-                                 TAP(KC_Q), WAIT_JITTER_UP(610, 5)
+                                 TAP(KC_Q), WAIT_JITTER_UP(620, 5)
+#define JUMP_ATTACK_SKIPS_COUNT 6
 
 #define JUMP_ATTACK_DELAY(jumpDelay, attackDelay) \
                                  TAP(KC_E), WAIT_JITTER_UP_D(jumpDelay),  \
@@ -52,6 +54,7 @@ bool janus(void);
 bool janus2(void);
 bool janus3(void);
 bool teleport_setup(void);
+bool boss_buffs(void);
 
 // ---------------------------------------------------------------------------
 // TRY_* macros  –  call + cast delay (only if fired)
@@ -65,4 +68,5 @@ bool teleport_setup(void);
 #define TRY_JANUS()           CALL_NAMED("janus", janus),         SKIP_FALSE(1), WAIT_JITTER_UP_D(560)
 #define TRY_JANUS2()          CALL_NAMED("janus2", janus2),        SKIP_FALSE(1), WAIT_JITTER_UP_D(560)
 #define TRY_JANUS3()          CALL_NAMED("janus3", janus3),         SKIP_FALSE(1), WAIT_JITTER_UP_D(560)
-#define TRY_TELEPORT_SETUP()  CALL_NAMED("teleport_setup", teleport_setup), SKIP_FALSE(1), WAIT_JITTER_UP_D(650)
+#define TRY_TELEPORT_SETUP()  CALL_NAMED("teleport_setup", teleport_setup), SKIP_FALSE(1), WAIT_JITTER_UP_D(675)
+#define TRY_BOSS_BUFFS()      CALL_NAMED("boss_buffs", boss_buffs), SKIP_FALSE(1), WAIT_JITTER_UP_D(1500)

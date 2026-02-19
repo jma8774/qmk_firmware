@@ -151,7 +151,7 @@ void matrix_scan_user(void) {
         //     uprintf("\n");
         //     uprintf("[scan] rotation -> setup (interval elapsed)\n");
         //     runner_start(&runner, SETUP_CERNIUM, MODE_SETUP);
-        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= 53000)  {
+        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= 49000)  {
             uprintf("\n");
             uprintf("[scan] rotation -> setup (interval elapsed)\n");
             runner_start(&runner, SETUP_ODIUM, MODE_SETUP);

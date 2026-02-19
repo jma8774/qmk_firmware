@@ -5,6 +5,6 @@
 
 const cmd_t BUFF_SCRIPT[] = {
     TRY_TELEPORT_SETUP(),
-    WAIT_JITTER_D(2000),
+    TRY_BOSS_BUFFS(),
     END(),
 };

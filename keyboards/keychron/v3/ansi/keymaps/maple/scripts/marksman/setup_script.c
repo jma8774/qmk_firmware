@@ -85,9 +85,9 @@ const cmd_t SETUP_ODIUM[] = {
     FLASH_JUMP(),
     TRY_JANUS3(),
     FLASH_JUMP(),
+    TAP_D(KC_RIGHT, 400),
     TRY_ERDA_FOUNTAIN(),
-    DASH(),
-    WAIT_JITTER_D(300),
+    WAIT_JITTER_D(200),
     TELEPORT_RESET(),
     END(),
 };

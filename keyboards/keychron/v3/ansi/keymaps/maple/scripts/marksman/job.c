@@ -116,3 +116,14 @@ bool teleport_setup(void) {
     cd_teleport_setup = now + random_range(TELEPORT_SETUP_CD_MS, 67, 100);
     return true;
 }
+
+// ---------------------------------------------------------------------------
+// Boss buffs  –  Page Up key, 119s cooldown
+// ---------------------------------------------------------------------------
+
+#define BOSS_BUFFS_KEY   KC_PGUP
+#define BOSS_BUFFS_CD_MS 119000
+static uint32_t cd_boss_buffs = 0;
+bool boss_buffs(void) {
+    return cooldown_tap(&cd_boss_buffs, BOSS_BUFFS_CD_MS, BOSS_BUFFS_KEY);
+}
