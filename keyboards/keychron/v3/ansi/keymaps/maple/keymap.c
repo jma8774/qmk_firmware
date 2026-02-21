@@ -22,6 +22,7 @@
 #include "engine/timing.h"
 #include "scripts/marksman/rotation_script.h"
 #include "scripts/marksman/setup_script.h"
+#include "scripts/marksman/loot_script.h"
 #include "scripts/marksman/buff_script.h"
 
 // clang-format off
@@ -79,10 +80,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 static bool      running            = false;
 static runner_t  runner             = {0};
 static uint32_t  last_setup_time_ms = 0;
+static uint32_t  last_loot_time_ms  = 0;
 static uint32_t  last_buff_time_ms  = 0;
 
 #define SETUP_INTERVAL_MS 120000  // 2 minutes
-#define BUFF_INTERVAL_MS 15000  // 15 seconds
+#define LOOT_INTERVAL_MS  60000   // 1 minute
+#define BUFF_INTERVAL_MS  15000   // 15 seconds
 
 // ---------------------------------------------------------------------------
 // keyboard_post_init_user  –  seed RNG once at boot
@@ -124,13 +127,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // ---------------------------------------------------------------------------
 // matrix_scan_user  –  policy layer (called every ~1 ms)
 // ---------------------------------------------------------------------------
-// static uint32_t last_print_time_ms = 0;
-// static void scan_print(const char *message) {
-//     if (timer_elapsed32(last_print_time_ms) >= 1000) {
-//         last_print_time_ms = timer_read32();
-//         uprintf("[scan] %s\n", message);
-//     }
-// }
+// static uint32_t gate1_time_ms = 53000;
+static uint32_t carcion_time_ms = 46000;
+// static uint32_t odium_time_ms = 48000;
 void matrix_scan_user(void) {
     if (!running) {
         return;
@@ -151,10 +150,14 @@ void matrix_scan_user(void) {
         //     uprintf("\n");
         //     uprintf("[scan] rotation -> setup (interval elapsed)\n");
         //     runner_start(&runner, SETUP_CERNIUM, MODE_SETUP);
-        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= 49000)  {
+        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= carcion_time_ms)  {
             uprintf("\n");
             uprintf("[scan] rotation -> setup (interval elapsed)\n");
-            runner_start(&runner, SETUP_ODIUM, MODE_SETUP);
+            runner_start(&runner, SETUP_CARCION, MODE_SETUP);
+        } else if (timer_elapsed32(last_loot_time_ms) >= random_range(LOOT_INTERVAL_MS, 80, 100)) {
+            uprintf("\n");
+            uprintf("[scan] rotation -> loot (interval elapsed)\n");
+            runner_start(&runner, LOOT_CARCION, MODE_LOOT);
         } else if (timer_elapsed32(last_buff_time_ms) >= random_range(BUFF_INTERVAL_MS, 70, 100)) {
             uprintf("\n");
             uprintf("[scan] rotation -> buff (interval elapsed)\n");
@@ -162,17 +165,22 @@ void matrix_scan_user(void) {
         } else {
             uprintf("\n");
             uprintf("[scan] rotation -> rotation (continue)\n");
-            runner_start(&runner, ROTATION_ODIUM, MODE_ROTATION);
+            runner_start(&runner, ROTATION_CARCION, MODE_ROTATION);
         }
     } else if (runner.mode == MODE_SETUP) {
         uprintf("\n");
         uprintf("[scan] setup done -> rotation\n");
         last_setup_time_ms = timer_read32();
-        runner_start(&runner, ROTATION_ODIUM, MODE_ROTATION);
+        runner_start(&runner, ROTATION_CARCION, MODE_ROTATION);
+    } else if (runner.mode == MODE_LOOT) {
+        uprintf("\n");
+        uprintf("[scan] loot done -> rotation\n");
+        last_loot_time_ms = timer_read32();
+        runner_start(&runner, ROTATION_CARCION, MODE_ROTATION);
     } else if (runner.mode == MODE_BUFF) {
         uprintf("\n");
         uprintf("[scan] buff done -> rotation\n");
         last_buff_time_ms = timer_read32();
-        runner_start(&runner, ROTATION_ODIUM, MODE_ROTATION);
+        runner_start(&runner, ROTATION_CARCION, MODE_ROTATION);
     }
 }

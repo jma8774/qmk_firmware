@@ -29,6 +29,9 @@
                                  TAP(KC_E), WAIT_JITTER_D(attackDelay), \
                                  TAP(KC_Q), WAIT_JITTER_UP(610, 5)
 
+#define JUMP_DOWN()              PRESS(KC_DOWN), WAIT_JITTER_D(70), TAP(KC_E), WAIT_JITTER_D(50), RELEASE(KC_DOWN), WAIT_JITTER_UP_D(700)
+#define JUMP_DOWN_DELAY(ms)      PRESS(KC_DOWN), WAIT_JITTER_D(70), TAP(KC_E), WAIT_JITTER_D(50), RELEASE(KC_DOWN), WAIT_JITTER_UP_D(ms)
+
 #define JUMP_DOWN_ATTACK()       PRESS(KC_DOWN), WAIT_JITTER_D(50), PRESS(KC_E), WAIT_JITTER_D(50), \
                                  TAP(KC_Q), WAIT_JITTER_D(50), RELEASE(KC_E), WAIT_JITTER_D(50), RELEASE(KC_DOWN), \
                                  WAIT_JITTER_UP_D(1000)
@@ -64,9 +67,9 @@ bool boss_buffs(void);
 #define TRY_SURGEBOLT()       CALL_NAMED("surgebolt", surgebolt),     SKIP_FALSE(1), WAIT_JITTER_UP_D(70)
 #define TRY_WEB()             CALL_NAMED("web", web),           SKIP_FALSE(1), WAIT_JITTER_UP_D(300)
 #define TRY_SOLAR_CREST()     CALL_NAMED("solar_crest", solar_crest),   SKIP_FALSE(1), WAIT_JITTER_UP_D(400)
-#define TRY_ERDA_FOUNTAIN()   CALL_NAMED("erda_fountain", erda_fountain), SKIP_FALSE(1), WAIT_JITTER_UP_D(600)
-#define TRY_JANUS()           CALL_NAMED("janus", janus),         SKIP_FALSE(1), WAIT_JITTER_UP_D(560)
-#define TRY_JANUS2()          CALL_NAMED("janus2", janus2),        SKIP_FALSE(1), WAIT_JITTER_UP_D(560)
-#define TRY_JANUS3()          CALL_NAMED("janus3", janus3),         SKIP_FALSE(1), WAIT_JITTER_UP_D(560)
+#define TRY_ERDA_FOUNTAIN()   CALL_NAMED("erda_fountain", erda_fountain), SKIP_FALSE(1), WAIT_JITTER_UP_D(700)
+#define TRY_JANUS()           CALL_NAMED("janus", janus),         SKIP_FALSE(1), WAIT_JITTER_UP_D(650)
+#define TRY_JANUS2()          CALL_NAMED("janus2", janus2),        SKIP_FALSE(1), WAIT_JITTER_UP_D(650)
+#define TRY_JANUS3()          CALL_NAMED("janus3", janus3),         SKIP_FALSE(1), WAIT_JITTER_UP_D(650)
 #define TRY_TELEPORT_SETUP()  CALL_NAMED("teleport_setup", teleport_setup), SKIP_FALSE(1), WAIT_JITTER_UP_D(675)
 #define TRY_BOSS_BUFFS()      CALL_NAMED("boss_buffs", boss_buffs), SKIP_FALSE(1), WAIT_JITTER_UP_D(1500)

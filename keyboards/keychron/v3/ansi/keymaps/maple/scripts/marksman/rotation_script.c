@@ -40,20 +40,12 @@ const cmd_t ROTATION_ODIUM[] = {
     END(),
 };
 
-// const cmd_t ROTATION_ODIUM[] = {
-//     DASH(),
-//     SHOOT(),
-//     DASH(),
-//     SHOOT(),
-//     DASH(),
-//     SHOOT(),
-//     DASH(),
-//     SHOOT(),
-//     CHANCE(15),
-//     SKIP_FALSE(DASH_SKIPS_COUNT * 2),
-//     DASH(),
-//     DASH(),
-//     WAIT_JITTER_D(200),
-//     TELEPORT_RESET(),
-//     END(),
-// };
+const cmd_t ROTATION_GATE1[] = {
+    SHOOT(),
+    END(),
+};
+
+const cmd_t ROTATION_CARCION[] = {
+    SHOOT(),
+    END(),
+};

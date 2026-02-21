@@ -18,3 +18,5 @@ extern const cmd_t ROTATION_JUMP_ATTACK_TELEPORT_RESET[];
 extern const cmd_t ROTATION_PS_RIGHT[];
 extern const cmd_t ROTATION_CERNIUM[];
 extern const cmd_t ROTATION_ODIUM[];
+extern const cmd_t ROTATION_GATE1[];
+extern const cmd_t ROTATION_CARCION[];
