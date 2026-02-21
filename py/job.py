@@ -103,6 +103,17 @@ def jump_attack():
     sleep_ms(jitter_up(620, 5))
 
 
+def jump_down_delay(ms: int):
+    press("down")
+    try:
+        sleep_ms(jitter(70, DJ))
+        tap("e")
+        sleep_ms(jitter(50, DJ))
+    finally:
+        release("down")
+    sleep_ms(jitter_up(ms, DJ))
+
+
 def teleport_reset():
     tap("x")
     sleep_ms(jitter(60, DJ))

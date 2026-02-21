@@ -5,37 +5,50 @@ import keyboard
 
 from timing import StopRequested, request_stop, clear_stop, random_range
 from keys import release_all
-from scripts import rotation_odium, setup_odium, buff_script
+from scripts import rotation_carcion, setup_carcion, loot_carcion, buff_script
 
-SETUP_INTERVAL_S = 49.0
+SETUP_INTERVAL_S = 46.0
+LOOT_INTERVAL_MS = 60_000
 BUFF_INTERVAL_MS = 15_000
 
 _thread: threading.Thread | None = None
+_first_run = True
+_last_setup = 0.0
+_last_loot = 0.0
+_last_buff = 0.0
 
 
 def _policy_loop():
-    last_setup = 0.0
-    last_buff = 0.0
+    global _first_run, _last_setup, _last_loot, _last_buff
 
-    print("[policy] initial buff")
-    buff_script()
+    if _first_run:
+        print("[policy] initial buff")
+        buff_script()
+        _first_run = False
+    else:
+        print("[policy] resuming")
 
     while True:
         now = time.monotonic()
 
-        if last_setup == 0 or (now - last_setup) >= SETUP_INTERVAL_S:
+        if _last_setup == 0 or (now - _last_setup) >= SETUP_INTERVAL_S:
             print("\n[policy] -> setup")
-            setup_odium()
-            last_setup = time.monotonic()
+            setup_carcion()
+            _last_setup = time.monotonic()
 
-        elif last_buff == 0 or (now - last_buff) >= random_range(BUFF_INTERVAL_MS, 70, 100) / 1000.0:
+        elif _last_loot == 0 or (now - _last_loot) >= random_range(LOOT_INTERVAL_MS, 80, 100) / 1000.0:
+            print("\n[policy] -> loot")
+            loot_carcion()
+            _last_loot = time.monotonic()
+
+        elif _last_buff == 0 or (now - _last_buff) >= random_range(BUFF_INTERVAL_MS, 70, 100) / 1000.0:
             print("\n[policy] -> buff")
             buff_script()
-            last_buff = time.monotonic()
+            _last_buff = time.monotonic()
 
         else:
             print("\n[policy] -> rotation")
-            rotation_odium()
+            rotation_carcion()
 
 
 def _run():
@@ -67,7 +80,7 @@ if __name__ == "__main__":
     keyboard.add_hotkey("f7", start, suppress=True)
     keyboard.add_hotkey("f8", stop, suppress=True)
 
-    print("Maple Marksman Bot (Odium)")
+    print("Maple Marksman Bot (Carcion)")
     print("  F7 = start")
     print("  F8 = pause")
     print("  Ctrl+C = exit")

@@ -1,7 +1,7 @@
-from keys import tap_d
-from timing import jitter, jitter_up, sleep_ms, chance
+from keys import tap, tap_d
+from timing import jitter, jitter_up, sleep_ms
 from job import (
-    rope, dash, flash_jump, jump_attack, teleport_reset,
+    shoot, dash, flash_jump, jump_attack, jump_down_delay, teleport_reset,
     janus1, janus2, janus3, erda_fountain,
     teleport_setup_try, boss_buffs,
 )
@@ -9,33 +9,45 @@ from job import (
 DJ = 10  # default wait-jitter percentage
 
 
-def rotation_odium():
-    for _ in range(4):
-        jump_attack()
-    if chance(15):
-        jump_attack()
-    teleport_reset()
-    sleep_ms(jitter_up(150, DJ))
+def rotation_carcion():
+    shoot()
 
 
-def setup_odium():
-    rope()
-    dash()
+def setup_carcion():
+    jump_down_delay(100)
+    jump_down_delay(500)
+    tap("up")
+    tap("up")
+    sleep_ms(jitter(500, DJ))
+    tap("right")
+    tap("right")
+    jump_down_delay(100)
+    jump_down_delay(500)
+    jump_down_delay(100)
+    jump_down_delay(500)
     if janus1.try_use():
-        sleep_ms(jitter_up(560, DJ))
-    dash()
-    flash_jump()
+        sleep_ms(jitter_up(650, DJ))
+    jump_attack()
+    tap_d("right", 600)
     if janus2.try_use():
-        sleep_ms(jitter_up(560, DJ))
-    dash()
+        sleep_ms(jitter_up(650, DJ))
+    tap_d("right", 600)
     flash_jump()
     if janus3.try_use():
-        sleep_ms(jitter_up(560, DJ))
+        sleep_ms(jitter_up(650, DJ))
     flash_jump()
-    tap_d("right", 400)
+    tap_d("right", 200)
     if erda_fountain.try_use():
-        sleep_ms(jitter_up(600, DJ))
-    sleep_ms(jitter(200, DJ))
+        sleep_ms(jitter_up(700, DJ))
+    tap_d("left", 300)
+    teleport_reset()
+
+
+def loot_carcion():
+    jump_down_delay(100)
+    jump_down_delay(600)
+    for _ in range(4):
+        jump_attack()
     teleport_reset()
 
 
