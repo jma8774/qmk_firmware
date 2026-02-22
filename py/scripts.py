@@ -1,4 +1,5 @@
-from keys import tap, tap_d
+from re import L
+from keys import tap, tap_d, press, release
 from timing import jitter, jitter_up, sleep_ms
 from job import (
     shoot, dash, flash_jump, jump_attack, jump_down_delay, teleport_reset,
@@ -14,34 +15,58 @@ def rotation_carcion():
 
 
 def setup_carcion():
-    jump_down_delay(100)
-    jump_down_delay(500)
-    tap("up")
-    tap("up")
-    sleep_ms(jitter(500, DJ))
-    tap("right")
-    tap("right")
-    jump_down_delay(100)
-    jump_down_delay(500)
-    jump_down_delay(100)
-    jump_down_delay(500)
+    # jump_down_delay(100)
+    # jump_down_delay(500)
+    # tap("up")
+    # tap("up")
+    # sleep_ms(jitter(500, DJ))
+    # tap("right")
+    # tap("right")
+    # jump_down_delay(100)
+    # jump_down_delay(500)
+    # jump_down_delay(100)
+    # jump_down_delay(500)
+    # if janus1.try_use():
+    #     sleep_ms(jitter_up(650, DJ))
+    # jump_attack()
+    # tap_d("right", 600)
+    # if janus2.try_use():
+    #     sleep_ms(jitter_up(650, DJ))
+    # tap_d("right", 600)
+    # flash_jump()
+    # if janus3.try_use():
+    #     sleep_ms(jitter_up(650, DJ))
+    # flash_jump()
+    # tap_d("right", 200)
+    # if erda_fountain.try_use():
+    #     sleep_ms(jitter_up(700, DJ))
+    # tap_d("left", 300)
+    # teleport_reset()
+    jump_attack()
+    dash()
+    dash()
     if janus1.try_use():
         sleep_ms(jitter_up(650, DJ))
-    jump_attack()
-    tap_d("right", 600)
+    tap("c")
+    sleep_ms(jitter(1600, DJ))
     if janus2.try_use():
         sleep_ms(jitter_up(650, DJ))
-    tap_d("right", 600)
-    flash_jump()
+    tap("left")
+    tap("left")
+    dash()
+    press('left')
+    sleep_ms(jitter(600, DJ))
+    release('left')
+    dash()
+    dash()
     if janus3.try_use():
         sleep_ms(jitter_up(650, DJ))
-    flash_jump()
-    tap_d("right", 200)
+    jump_attack()
     if erda_fountain.try_use():
         sleep_ms(jitter_up(700, DJ))
-    tap_d("left", 300)
+    tap('right')
+    tap('right')
     teleport_reset()
-
 
 def loot_carcion():
     jump_down_delay(100)
