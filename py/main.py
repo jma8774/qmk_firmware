@@ -36,10 +36,10 @@ def _policy_loop():
             setup_carcion()
             _last_setup = time.monotonic()
 
-        # elif _last_loot == 0 or (now - _last_loot) >= random_range(LOOT_INTERVAL_MS, 80, 100) / 1000.0:
-        #     print("\n[policy] -> loot")
-        #     loot_carcion()
-        #     _last_loot = time.monotonic()
+        elif _last_loot == 0 or (now - _last_loot) >= random_range(LOOT_INTERVAL_MS, 80, 100) / 1000.0:
+            print("\n[policy] -> loot")
+            loot_carcion()
+            _last_loot = time.monotonic()
 
         elif _last_buff == 0 or (now - _last_buff) >= random_range(BUFF_INTERVAL_MS, 70, 100) / 1000.0:
             print("\n[policy] -> buff")

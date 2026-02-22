@@ -69,12 +69,16 @@ def setup_carcion():
     teleport_reset()
 
 def loot_carcion():
-    jump_down_delay(100)
-    jump_down_delay(600)
-    for _ in range(4):
-        jump_attack()
+    jump_attack_delay(700)
+    tap("left")
+    tap("left")
+    shoot()
+    shoot()
+    shoot()
+    shoot()
+    tap('right')
+    tap('right')
     teleport_reset()
-
 
 def buff_script():
     if teleport_setup_try():
