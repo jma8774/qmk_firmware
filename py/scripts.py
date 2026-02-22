@@ -2,7 +2,7 @@ from re import L
 from keys import tap, tap_d, press, release
 from timing import jitter, jitter_up, sleep_ms
 from job import (
-    shoot, dash, flash_jump, jump_attack, jump_down_delay, teleport_reset,
+    shoot, dash, flash_jump, jump_attack, jump_attack_delay, jump_down_delay, teleport_reset,
     janus1, janus2, janus3, erda_fountain,
     teleport_setup_try, boss_buffs,
 )
@@ -42,7 +42,7 @@ def setup_carcion():
     #     sleep_ms(jitter_up(700, DJ))
     # tap_d("left", 300)
     # teleport_reset()
-    jump_attack()
+    jump_attack_delay(700)
     dash()
     dash()
     if janus1.try_use():

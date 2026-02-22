@@ -84,7 +84,7 @@ def rope():
 
 def dash():
     tap("alt")
-    sleep_ms(jitter_up(600, 5))
+    sleep_ms(jitter_up(620, 5))
 
 
 def flash_jump():
@@ -101,6 +101,14 @@ def jump_attack():
     sleep_ms(jitter(200, DJ))
     tap("q")
     sleep_ms(jitter_up(620, 5))
+
+def jump_attack_delay(delayAfter):
+    tap("e")
+    sleep_ms(jitter_up(70, DJ))
+    tap("e")
+    sleep_ms(jitter(200, DJ))
+    tap("q")
+    sleep_ms(jitter_up(delayAfter, 5))
 
 
 def jump_down_delay(ms: int):
