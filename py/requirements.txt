@@ -1,2 +1,4 @@
 pydirectinput
 keyboard
+opencv-python
+mss

@@ -3,23 +3,65 @@ import threading
 
 import keyboard
 
-from timing import StopRequested, request_stop, clear_stop, random_range
-from keys import release_all
+from timing import StopRequested, request_stop, clear_stop, random_range, jitter_up, jitter, sleep_ms
+from keys import tap, press, release, release_all
+from job import flash_jump, rope, jump_down_delay, web, solar_crest, teleport_reset
 from scripts import rotation_carcion, setup_carcion, loot_carcion, buff_script
+from runewalker import RuneWalker, RuneWalkerPilot
 
 SETUP_INTERVAL_S = 46.0
 LOOT_INTERVAL_MS = 60_000
 BUFF_INTERVAL_MS = 15_000
+RUNE_CHECK_INTERVAL_S = 60.0
+
+
+class MarksPilot(RuneWalkerPilot):
+    def rune_flash_jump(self, direction=None):
+        if direction:
+            press(direction)
+        flash_jump()
+        if direction:
+            release(direction)
+
+    def rune_jump(self):
+        tap("e")
+
+    def rune_rope(self):
+        rope()
+
+    def rune_jump_down(self):
+        jump_down_delay(500)
+
+    def rune_protect(self):
+        pass
+
+    def rune_interact(self):
+        tap("y")
+        sleep_ms(jitter_up(750, 20))
+        # Always left down down up
+        tap("left")
+        sleep_ms(jitter(120, 20))
+        tap("down")
+        sleep_ms(jitter(120, 20))
+        tap("down")
+        sleep_ms(jitter(120, 20))
+        tap("up")
+        sleep_ms(jitter(1000, 20))
+        teleport_reset()
+
 
 _thread: threading.Thread | None = None
 _first_run = True
 _last_setup = 0.0
 _last_loot = 0.0
 _last_buff = 0.0
+_last_rune_check = 0.0
+
+_rune_walker = RuneWalker(MarksPilot())
 
 
 def _policy_loop():
-    global _first_run, _last_setup, _last_loot, _last_buff
+    global _first_run, _last_setup, _last_loot, _last_buff, _last_rune_check
 
     if _first_run:
         print("[policy] initial buff")
@@ -30,6 +72,14 @@ def _policy_loop():
 
     while True:
         now = time.monotonic()
+
+        # Rune check (highest priority — avoid penalty)
+        if (now - _last_rune_check) >= RUNE_CHECK_INTERVAL_S:
+            _last_rune_check = now
+            if _rune_walker.find_rune() is not None:
+                print("\n[policy] -> rune detected, walking to it")
+                _rune_walker.go()
+                continue
 
         if _last_setup == 0 or (now - _last_setup) >= SETUP_INTERVAL_S:
             print("\n[policy] -> setup")

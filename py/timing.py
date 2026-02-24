@@ -18,6 +18,10 @@ def clear_stop():
     _stop.clear()
 
 
+def is_stopped() -> bool:
+    return _stop.is_set()
+
+
 def sleep_ms(ms: int):
     """Interruptible sleep. Raises StopRequested if the bot is stopped."""
     if ms <= 0:
