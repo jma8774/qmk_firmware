@@ -1,9 +1,13 @@
+import json
 import time
+from pathlib import Path
 
 from keys import tap, tap_raw, press, release
 from timing import jitter, jitter_up, sleep_ms, random_range
 
 DJ = 10  # default wait-jitter percentage (matches DEFAULT_WAIT_JITTER_PCT)
+
+_COOLDOWN_DB = Path(__file__).parent / ".cooldowns.json"
 
 
 # ---------------------------------------------------------------------------
@@ -27,6 +31,49 @@ class Cooldown:
         return True
 
 
+class PersistedCooldown:
+    """Cooldown that survives restarts via a JSON file on disk.
+
+    Uses wall-clock time (time.time) so the saved timestamp remains
+    meaningful across process lifetimes.
+    """
+
+    def __init__(self, name: str, key: str, cd_ms: int):
+        self.name = name
+        self.key = key
+        self.cd_ms = cd_ms
+        self._ready_at = self._load()
+
+    def try_use(self) -> bool:
+        now = time.time()
+        if now < self._ready_at:
+            return False
+        tap(self.key)
+        self._ready_at = now + self.cd_ms / 1000.0
+        self._save()
+        print(f"    [{self.name}] fired")
+        return True
+
+    def remaining_ms(self) -> int:
+        """Milliseconds until this cooldown is ready (0 if ready now)."""
+        return max(0, int((self._ready_at - time.time()) * 1000))
+
+    def _load(self) -> float:
+        try:
+            db = json.loads(_COOLDOWN_DB.read_text())
+            return float(db.get(self.name, 0.0))
+        except (FileNotFoundError, json.JSONDecodeError, ValueError):
+            return 0.0
+
+    def _save(self):
+        try:
+            db = json.loads(_COOLDOWN_DB.read_text())
+        except (FileNotFoundError, json.JSONDecodeError):
+            db = {}
+        db[self.name] = self._ready_at
+        _COOLDOWN_DB.write_text(json.dumps(db))
+
+
 bolt_burst    = Cooldown("bolt_burst",    "d",      6_000)
 surgebolt     = Cooldown("surgebolt",     "r",     18_000)
 web           = Cooldown("web",           "4",    250_000)
@@ -37,6 +84,10 @@ janus2        = Cooldown("janus2",        "n",     57_000)
 janus3        = Cooldown("janus3",        "n",     57_000)
 boss_buffs    = Cooldown("boss_buffs",    "pageup", 119_000)
 
+guild_crit_buff = PersistedCooldown("guild_crit_buff", "f5", 30 * 60 * 1000) # 30 minutes
+exp_buff = PersistedCooldown("exp_buff", "f9", 30 * 60 * 1000) # 30 minutes
+legion_meso_buff = PersistedCooldown("legion_meso_buff", "f10", 30 * 60 * 1000) # 30 minutes
+wap_buff = PersistedCooldown("wap_buff", "f12", 30 * 60 * 1000) # 30 minutes
 
 # ---------------------------------------------------------------------------
 # Teleport setup (special combo with variable cooldown)

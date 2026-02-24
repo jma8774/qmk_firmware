@@ -95,6 +95,7 @@ secrets.tar
 __pycache__
 .python-version
 .venv
+.cooldowns.json
 
 # Prerequisites for updating ChibiOS
 /util/fmpp*
