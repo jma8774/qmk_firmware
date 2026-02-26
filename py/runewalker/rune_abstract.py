@@ -37,3 +37,8 @@ class RuneWalkerPilot(ABC):
     def rune_interact(self):
         """Press the interaction key to activate the rune."""
         ...
+
+    @abstractmethod
+    def done(self):
+        """Done with the rune."""
+        ...

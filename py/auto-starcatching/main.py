@@ -5,7 +5,7 @@ import keyboard
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from timing import StopRequested, request_stop, clear_stop, sleep_ms
+from timing import StopRequested, request_stop, clear_stop, sleep_ms, jitter
 from keys import tap, release_all
 
 
@@ -15,9 +15,14 @@ _thread: threading.Thread | None = None
 def _run_starcatching():
     while True:
         tap("space")
-        sleep_ms(3000)
+        sleep_ms(50)
         tap("space")
-        sleep_ms(5000)
+        sleep_ms(50)
+        sleep_ms(1600)
+        tap("space")
+        sleep_ms(50)
+        tap("space")
+        sleep_ms(2750)
 
 def _run():
     try:

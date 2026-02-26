@@ -7,16 +7,14 @@ import math
 from pathlib import Path
 
 import cv2
-import mss
-import numpy as np
 
 from runewalker.rune_abstract import RuneWalkerPilot
 from keys import press, release
-from timing import sleep_ms, is_stopped
+from timing import sleep_ms, is_stopped, jitter, jitter_up
+from common import grab_region, match_template, is_template_on_screen
 
 _IMAGES_DIR = Path(__file__).parent / "images"
 
-# Minimap defaults (top-left corner of the screen).
 _DEFAULT_MINIMAP = {"top": 0, "left": 0, "width": 350, "height": 300}
 
 _MATCH_THRESHOLD = 0.8
@@ -31,15 +29,15 @@ class RuneWalker:
 
         self._me_tmpl = cv2.imread(str(_IMAGES_DIR / "me_minimap.png"))
         self._rune_tmpl = cv2.imread(str(_IMAGES_DIR / "rune_minimap.png"))
+        self._rune_tmpl_2 = cv2.imread(str(_IMAGES_DIR / "rune_minimap2.png"))
         self._rune_buff_tmpl = cv2.imread(str(_IMAGES_DIR / "rune_buff.png"))
+        self._rune_inactive_tmpl = cv2.imread(str(_IMAGES_DIR / "rune_inactive_minimap.png"))
         if self._me_tmpl is None:
             raise FileNotFoundError(f"Missing {_IMAGES_DIR / 'me_minimap.png'}")
         if self._rune_tmpl is None:
             raise FileNotFoundError(f"Missing {_IMAGES_DIR / 'rune_minimap.png'}")
         if self._rune_buff_tmpl is None:
             raise FileNotFoundError(f"Missing {_IMAGES_DIR / 'rune_buff.png'}")
-
-        self._sct: mss.mss | None = None
 
     # ------------------------------------------------------------------
     # Logging
@@ -53,45 +51,40 @@ class RuneWalker:
     # Screen capture + template matching
     # ------------------------------------------------------------------
 
-    def _get_sct(self) -> mss.mss:
-        """Lazy-init so the GDI handle belongs to the calling thread."""
-        if self._sct is None:
-            self._sct = mss.mss()
-        return self._sct
-
-    def _grab_minimap(self) -> np.ndarray:
-        raw = self._get_sct().grab(self.minimap_region)
-        return cv2.cvtColor(np.array(raw), cv2.COLOR_BGRA2BGR)
-
-    @staticmethod
-    def _match(frame: np.ndarray, template: np.ndarray, threshold: float = _MATCH_THRESHOLD):
-        """Return (cx, cy) centre of the best match, or None."""
-        result = cv2.matchTemplate(frame, template, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, max_loc = cv2.minMaxLoc(result)
-        if max_val < threshold:
-            return None
-        h, w = template.shape[:2]
-        return (max_loc[0] + w // 2, max_loc[1] + h // 2)
-
     def find_me(self):
         try:
-            return self._match(self._grab_minimap(), self._me_tmpl)
+            return match_template(grab_region(self.minimap_region), self._me_tmpl)
         except Exception as e:
             self._log(f"find_me error: {e}")
             return None
 
     def find_rune(self):
         try:
-            return self._match(self._grab_minimap(), self._rune_tmpl)
+            minimap = grab_region(self.minimap_region)
+            return match_template(minimap, self._rune_tmpl, threshold=0.75) or match_template(minimap, self._rune_tmpl_2, threshold=0.75)
         except Exception as e:
             self._log(f"find_rune error: {e}")
             return None
 
-    def _has_rune_buff(self) -> bool:
-        """Check the top-left buff region for the rune-buff icon."""
+    def is_rune_inactive(self) -> bool:
+        """Return True if the inactive (on-cooldown) rune icon is on the minimap."""
+        if self._rune_inactive_tmpl is None:
+            return False
         try:
-            frame = self._grab_minimap()
-            return self._match(frame, self._rune_buff_tmpl, threshold=0.75) is not None
+            ret = is_template_on_screen(self._rune_inactive_tmpl, threshold=0.8)
+            if ret:
+                print("    [is_rune_inactive] found")
+            else:
+                print("    [is_rune_inactive] not found")
+            return ret
+        except Exception as e:
+            self._log(f"is_rune_inactive error: {e}")
+            return False
+
+    def _has_rune_buff(self) -> bool:
+        """Check the full screen for the rune-buff icon."""
+        try:
+            return is_template_on_screen(self._rune_buff_tmpl, threshold=0.75)
         except Exception as e:
             self._log(f"_has_rune_buff error: {e}")
             return False
@@ -111,6 +104,7 @@ class RuneWalker:
         me_loc = self.find_me()
         me_miss_count = 0
         try_left = True
+        last_down_count = [0]
         self._log(f"Rune at {rune_loc}")
 
         while not is_stopped() and rune_loc is not None:
@@ -133,7 +127,7 @@ class RuneWalker:
             me_miss_count = 0
             vec = self._vector(me_loc, rune_loc)
             self._log(f"Vector: {vec}")
-            self._make_move(vec)
+            self._make_move(vec, last_down_count)
             me_loc = self.find_me()
             rune_loc = self.find_rune()
 
@@ -151,6 +145,7 @@ class RuneWalker:
             sleep_ms(750)
             if self._has_rune_buff():
                 self._log("Rune buff detected, done")
+                self.pilot.done()
                 return True
             self._log(f"No rune buff yet, retrying interact ({attempt + 1}/{max_attempts})")
             self.pilot.rune_interact()
@@ -167,7 +162,7 @@ class RuneWalker:
         dy = self._snap(rune[1] - me[1])
         return (dx, dy)
 
-    def _make_move(self, vector):
+    def _make_move(self, vector, last_down_count):
         self._move_seq += 1
         dx, dy = vector
 
@@ -202,7 +197,14 @@ class RuneWalker:
 
         # Vertical movement
         if dy > 0:
-            self.pilot.rune_jump_down()
+            last_down_count[0] += 1
+            if last_down_count[0] % 2 == 0:
+                self.pilot.rune_jump_down()
+            else:
+                press("down")
+                sleep_ms(jitter_up(3000, 20))
+                release("down")
+                sleep_ms(jitter(100, 20))
         elif dy < 0:
             self.pilot.rune_rope()
 

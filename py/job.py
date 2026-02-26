@@ -4,11 +4,11 @@ from pathlib import Path
 
 from keys import tap, tap_raw, press, release
 from timing import jitter, jitter_up, sleep_ms, random_range
+from common import load_template, is_template_on_screen
 
 DJ = 10  # default wait-jitter percentage (matches DEFAULT_WAIT_JITTER_PCT)
 
 _COOLDOWN_DB = Path(__file__).parent / ".cooldowns.json"
-
 
 # ---------------------------------------------------------------------------
 # Cooldown-tracked skills (mirrors job.c)
@@ -38,21 +38,29 @@ class PersistedCooldown:
     meaningful across process lifetimes.
     """
 
-    def __init__(self, name: str, key: str, cd_ms: int):
+    def __init__(self, name: str, key: str, cd_ms: int, delayAfter: int = 100):
         self.name = name
         self.key = key
         self.cd_ms = cd_ms
         self._ready_at = self._load()
+        self.delayAfter = delayAfter
 
     def try_use(self) -> bool:
         now = time.time()
         if now < self._ready_at:
             return False
         tap(self.key)
+        sleep_ms(jitter(self.delayAfter, 20))
         self._ready_at = now + self.cd_ms / 1000.0
         self._save()
         print(f"    [{self.name}] fired")
         return True
+
+    def reset(self):
+        """Clear the persisted cooldown so it fires on next try_use()."""
+        self._ready_at = 0.0
+        self._save()
+        print(f"    [{self.name}] cooldown reset")
 
     def remaining_ms(self) -> int:
         """Milliseconds until this cooldown is ready (0 if ready now)."""
@@ -84,10 +92,10 @@ janus2        = Cooldown("janus2",        "n",     57_000)
 janus3        = Cooldown("janus3",        "n",     57_000)
 boss_buffs    = Cooldown("boss_buffs",    "pageup", 119_000)
 
-guild_crit_buff = PersistedCooldown("guild_crit_buff", "f5", 30 * 60 * 1000) # 30 minutes
-exp_buff = PersistedCooldown("exp_buff", "f9", 30 * 60 * 1000) # 30 minutes
-legion_meso_buff = PersistedCooldown("legion_meso_buff", "f10", 30 * 60 * 1000) # 30 minutes
-wap_buff = PersistedCooldown("wap_buff", "f12", 30 * 60 * 1000) # 30 minutes
+guild_crit_buff = PersistedCooldown("guild_crit_buff", "f5", 30 * 60 * 1000 + 10) # 30 minutes and 10 seconds
+exp_buff = PersistedCooldown("exp_buff", "f9", 30 * 60 * 1000 + 10) # 30 minutes and 10 seconds
+legion_meso_buff = PersistedCooldown("legion_meso_buff", "f10", 30 * 60 * 1000 + 10) # 30 minutes and 10 seconds
+wap_buff = PersistedCooldown("wap_buff", "f12", 30 * 60 * 1000 + 10) # 30 minutes and 10 seconds
 
 # ---------------------------------------------------------------------------
 # Teleport setup (special combo with variable cooldown)
@@ -96,10 +104,10 @@ wap_buff = PersistedCooldown("wap_buff", "f12", 30 * 60 * 1000) # 30 minutes
 _teleport_setup_ready_at = 0.0
 
 
-def teleport_setup_try() -> bool:
+def teleport_setup_try(ignore_cooldown: bool = False) -> bool:
     global _teleport_setup_ready_at
     now = time.monotonic()
-    if now < _teleport_setup_ready_at:
+    if not ignore_cooldown and now < _teleport_setup_ready_at:
         return False
 
     press("down")
@@ -114,7 +122,7 @@ def teleport_setup_try() -> bool:
     finally:
         release("down")
 
-    _teleport_setup_ready_at = now + random_range(35_000, 67, 100) / 1000.0
+    _teleport_setup_ready_at = now + random_range(25_000, 67, 100) / 1000.0
     print("    [teleport_setup] fired")
     return True
 
@@ -128,9 +136,9 @@ def shoot():
     sleep_ms(jitter_up(600, DJ))
 
 
-def rope():
+def rope(delayAfter: int = 1600):
     tap("c")
-    sleep_ms(jitter_up(1600, DJ))
+    sleep_ms(jitter_up(delayAfter, DJ))
 
 
 def dash():
@@ -173,10 +181,10 @@ def jump_down_delay(ms: int):
     sleep_ms(jitter_up(ms, DJ))
 
 
-def teleport_reset():
+def teleport_reset(delayAfter: int = 650):
     tap("x")
     sleep_ms(jitter(60, DJ))
     tap("x")
     sleep_ms(jitter(60, DJ))
     tap("x")
-    sleep_ms(jitter_up(650, DJ))
+    sleep_ms(jitter_up(delayAfter, DJ))
