@@ -202,7 +202,7 @@ class RuneWalker:
                 self.pilot.rune_jump_down()
             else:
                 press("down")
-                sleep_ms(jitter_up(3000, 20))
+                sleep_ms(jitter(2000, 20))
                 release("down")
                 sleep_ms(jitter(100, 20))
         elif dy < 0:

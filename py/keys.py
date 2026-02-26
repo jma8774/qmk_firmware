@@ -1,7 +1,7 @@
 import pydirectinput
 
 from timing import jitter, sleep_ms
-from map_check import map_check
+from map_check import map_check, admin_check
 
 pydirectinput.PAUSE = 0
 
@@ -13,6 +13,7 @@ _held: set[str] = set()
 
 def _do_tap(key: str, ms: int):
     map_check()
+    admin_check()
     pydirectinput.keyDown(key)
     try:
         sleep_ms(ms)
@@ -37,12 +38,14 @@ def tap_raw(key: str, duration_ms: int):
 
 def press(key: str):
     map_check()
+    admin_check()
     pydirectinput.keyDown(key)
     _held.add(key)
 
 
 def release(key: str):
     map_check()
+    admin_check()
     pydirectinput.keyUp(key)
     _held.discard(key)
 

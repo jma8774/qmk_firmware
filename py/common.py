@@ -3,26 +3,36 @@
 from pathlib import Path
 
 import cv2
-import mss
+import dxcam
 import numpy as np
 
 _IMAGES_DIR = Path(__file__).parent / "images"
 
 DEFAULT_THRESHOLD = 0.8
 
-
-def grab_screen() -> np.ndarray:
-    """Capture the entire primary monitor and return a BGR numpy array."""
-    with mss.mss() as sct:
-        raw = sct.grab(sct.monitors[0])
-    return cv2.cvtColor(np.array(raw), cv2.COLOR_BGRA2BGR)
+_camera = dxcam.create(output_color="BGR")
 
 
-def grab_region(region: dict) -> np.ndarray:
-    """Capture a specific region (dict with top/left/width/height) as BGR."""
-    with mss.mss() as sct:
-        raw = sct.grab(region)
-    return cv2.cvtColor(np.array(raw), cv2.COLOR_BGRA2BGR)
+def grab_screen(grayscale: bool = False) -> np.ndarray:
+    """Capture the full screen. Returns grayscale if requested, BGR otherwise."""
+    frame = _camera.grab()
+    while frame is None:
+        frame = _camera.grab()
+    if grayscale:
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    return frame
+
+
+def grab_region(region: dict, grayscale: bool = False) -> np.ndarray:
+    """Capture a specific region (dict with top/left/width/height)."""
+    left, top = region["left"], region["top"]
+    r = (left, top, left + region["width"], top + region["height"])
+    frame = _camera.grab(region=r)
+    while frame is None:
+        frame = _camera.grab(region=r)
+    if grayscale:
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    return frame
 
 
 def match_template(frame: np.ndarray, template: np.ndarray, threshold: float = DEFAULT_THRESHOLD):
@@ -35,11 +45,18 @@ def match_template(frame: np.ndarray, template: np.ndarray, threshold: float = D
     return (max_loc[0] + w // 2, max_loc[1] + h // 2)
 
 
-def is_template_on_screen(template: np.ndarray, threshold: float = DEFAULT_THRESHOLD) -> bool:
+def is_template_on_screen(template: np.ndarray, threshold: float = DEFAULT_THRESHOLD, grayscale: bool = False) -> bool:
     """Grab the full screen and return True if *template* is found."""
     if template is None:
         return False
-    return match_template(grab_screen(), template, threshold) is not None
+    return match_template(grab_screen(grayscale=grayscale), template, threshold) is not None
+
+
+def is_template_in_region(template: np.ndarray, region: dict, threshold: float = DEFAULT_THRESHOLD, grayscale: bool = False) -> bool:
+    """Grab a region and return True if *template* is found."""
+    if template is None:
+        return False
+    return match_template(grab_region(region, grayscale=grayscale), template, threshold) is not None
 
 
 def load_template(name: str) -> np.ndarray:

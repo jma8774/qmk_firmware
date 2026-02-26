@@ -9,6 +9,7 @@ from job import (
     teleport_setup_try, boss_buffs, guild_crit_buff, exp_buff, legion_meso_buff, wap_buff,
 )
 from common import is_enfolding3_teleport_reset_on_screen
+import random
 
 DJ = 10  # default wait-jitter percentage
 NO_CONSUMABLE = "noconsumable" in sys.argv
@@ -34,16 +35,25 @@ def setup_carcion():
     sleep_ms(jitter(1600, DJ))
     if janus2.try_use():
         sleep_ms(jitter_up(650, DJ))
-    tap("left")
-    sleep_ms(jitter(50, DJ))
-    tap("left")
-    sleep_ms(jitter(50, DJ))
-    dash()
-    press('left')
-    sleep_ms(jitter(600, DJ))
-    release('left')
-    dash()
-    dash()
+    if random.random() < 0.5:
+        press('left')
+        sleep_ms(jitter(1300, DJ))
+        release('left')
+        sleep_ms(jitter(50, DJ))
+        dash()
+    else:
+        tap('left')
+        sleep_ms(jitter(50, DJ))
+        shoot()
+        dash()
+        press('left')
+        sleep_ms(jitter(600, DJ))
+        release('left')
+        sleep_ms(jitter(50, DJ))
+        dash()
+        dash()
+    if random.random() < 0.5:
+        shoot()
     if janus3.try_use():
         sleep_ms(jitter_up(650, DJ))
     jump_attack()
@@ -105,8 +115,9 @@ def full_reset_carcion():
 
 
 def loot_carcion(rune_walker, last_rune_check_2):
+    if random.random() < 0.5:
+        dash()
     jump_attack_delay(700)
-    jump_attack_delay(500)
     tap("left")
     sleep_ms(jitter(50, 20))
     tap("left")

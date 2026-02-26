@@ -1,13 +1,20 @@
 import time
 import winsound
 from pathlib import Path
+import sys
+import cv2
 
-from common import grab_region, match_template, load_template
+from common import grab_screen, is_template_on_screen, match_template, load_template, is_template_in_region
 from timing import request_stop
 
+NOCHECK = "nocheck" in sys.argv
 MINIMAP_REGION = {"top": 0, "left": 0, "width": 350, "height": 350}
-_carcion_tmpl = load_template("carcion.png")
+ADMIN_REGION = {"top": 424, "left": 511, "width": 1494-511, "height": 831-424}
+_carcion_tmpl = cv2.cvtColor(load_template("carcion.png"), cv2.COLOR_BGR2GRAY)
+_admin_eye_tmpl = cv2.cvtColor(load_template("maple_admin_eye.png"), cv2.COLOR_BGR2GRAY)
+_admin_text_tmpl = cv2.cvtColor(load_template("maple_admin_text.png"), cv2.COLOR_BGR2GRAY)
 _last_check = 0.0
+_last_admin_check = 0.0
 
 _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 
@@ -21,14 +28,34 @@ def stop_alert():
     winsound.PlaySound(None, winsound.SND_PURGE)
 
 
+def admin_check():
+    if NOCHECK:
+        return
+    global _last_admin_check
+    now = time.monotonic()
+    if now - _last_admin_check < 3.0:
+        return
+    _last_admin_check = now
+
+    if is_template_in_region(_admin_text_tmpl, ADMIN_REGION, grayscale=True):
+        print("[map_check] maple admin TEXT detected — pausing")
+        _play_alert()
+        request_stop()
+    elif is_template_in_region(_admin_eye_tmpl, ADMIN_REGION, grayscale=True):
+        print("[map_check] maple admin EYE detected — pausing")
+        _play_alert()
+        request_stop()
+
+
 def map_check():
+    if NOCHECK:
+        return
     global _last_check
     now = time.monotonic()
     if now - _last_check < 1.0:
         return
     _last_check = now
-    frame = grab_region(MINIMAP_REGION)
-    if match_template(frame, _carcion_tmpl) is None:
+    if not is_template_in_region(_carcion_tmpl, MINIMAP_REGION, grayscale=True):
         print("[map_check] carcion not found on minimap — pausing")
         _play_alert()
         request_stop()
