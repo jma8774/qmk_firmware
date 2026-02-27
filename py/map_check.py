@@ -16,7 +16,7 @@ _admin_eye_tmpl = cv2.cvtColor(load_template("maple_admin_eye.png"), cv2.COLOR_B
 _admin_text_tmpl = cv2.cvtColor(load_template("maple_admin_text.png"), cv2.COLOR_BGR2GRAY)
 _last_check = 0.0
 _last_admin_check = 0.0
-_last_type_to_gm_check = 0.0
+_last_type_to_gm_check = None
 
 _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 
@@ -24,10 +24,12 @@ _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 def _type_to_gm(type_string: callable, tap: callable):
     global _last_type_to_gm_check
     now = time.monotonic()
-    if now - _last_type_to_gm_check > 10.0:
+    if _last_type_to_gm_check != None and now - _last_type_to_gm_check < 10.0:
+        print("[map_check] type to gm check skipped")
         return
     _last_type_to_gm_check = now
 
+    print("[map_check] type to gm check")
     random_string = ["hello o-o", "hello", "heyyyy", "o-o"]
     tap("enter")
     sleep_ms(jitter(100, 10))
