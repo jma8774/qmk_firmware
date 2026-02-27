@@ -3,10 +3,9 @@ import winsound
 from pathlib import Path
 import sys
 import cv2
-from keys import tap, sleep_ms
 
 from common import load_template, is_template_in_region
-from timing import request_stop, jitter
+from timing import request_stop, jitter, sleep_ms
 import random
 
 NOCHECK = "nocheck" in sys.argv
@@ -21,7 +20,7 @@ _last_admin_check = 0.0
 _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 
 
-def _type_to_gm():
+def _type_to_gm(type_string: callable, tap: callable):
     def type_string(string: str):
         for char in string:
             if char == " ":
@@ -46,7 +45,7 @@ def stop_alert():
     winsound.PlaySound(None, winsound.SND_PURGE)
 
 
-def admin_check():
+def admin_check(type_string: callable, tap: callable):
     if NOCHECK:
         return
     global _last_admin_check
@@ -65,7 +64,7 @@ def admin_check():
         request_stop()
 
 
-def map_check():
+def map_check(type_string: callable, tap: callable):
     if NOCHECK:
         return
     global _last_check
@@ -76,5 +75,5 @@ def map_check():
     if not is_template_in_region(_carcion_tmpl, MINIMAP_REGION, grayscale=True):
         print("[map_check] carcion not found on minimap — pausing")
         _play_alert()
-        _type_to_gm()
+        _type_to_gm(type_string, tap)
         request_stop()

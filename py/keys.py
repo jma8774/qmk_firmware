@@ -12,8 +12,8 @@ _held: set[str] = set()
 
 
 def _do_tap(key: str, ms: int):
-    map_check()
-    admin_check()
+    map_check(type_string, tap)
+    admin_check(type_string, tap)
     pydirectinput.keyDown(key)
     try:
         sleep_ms(ms)
@@ -37,8 +37,8 @@ def tap_raw(key: str, duration_ms: int):
 
 
 def press(key: str):
-    map_check()
-    admin_check()
+    map_check(type_string, tap)
+    admin_check(type_string, tap)
     pydirectinput.keyDown(key)
     _held.add(key)
 
@@ -55,3 +55,9 @@ def release_all():
         pydirectinput.keyUp(k)
     _held.clear()
 
+def type_string(string: str):
+    for char in string:
+        if char == " ":
+            tap("space")
+        else:
+            tap(char)
