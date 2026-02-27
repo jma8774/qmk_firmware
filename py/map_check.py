@@ -16,6 +16,7 @@ _admin_eye_tmpl = cv2.cvtColor(load_template("maple_admin_eye.png"), cv2.COLOR_B
 _admin_text_tmpl = cv2.cvtColor(load_template("maple_admin_text.png"), cv2.COLOR_BGR2GRAY)
 _last_check = 0.0
 _last_admin_check = 0.0
+_last_type_to_gm_check = 0.0
 
 _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 
@@ -28,6 +29,11 @@ def _type_to_gm(type_string: callable, tap: callable):
             else:
                 tap(char)
             sleep_ms(jitter(75, 10))
+
+    now = time.monotonic()
+    if now - _last_type_to_gm_check < 10.0:
+        return
+    _last_type_to_gm_check = now
 
     random_string = ["hello o-o", "hello", "heyyyy", "o-o"]
     tap("enter")
