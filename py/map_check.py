@@ -32,7 +32,7 @@ def _type_to_gm(type_string: callable, tap: callable):
             sleep_ms(jitter(75, 10))
 
     now = time.monotonic()
-    if now - _last_type_to_gm_check < 10.0:
+    if now - _last_type_to_gm_check > 10.0:
         return
     _last_type_to_gm_check = now
 
