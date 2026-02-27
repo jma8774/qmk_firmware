@@ -13,8 +13,8 @@ _held: set[str] = set()
 
 def _do_tap(key: str, ms: int, check: bool):
     if check:
-        map_check(type_string, tap)
-        admin_check(type_string, tap)
+        if not map_check(type_string, tap):
+            admin_check(type_string, tap)
     pydirectinput.keyDown(key)
     try:
         sleep_ms(ms)
@@ -39,16 +39,16 @@ def tap_raw(key: str, duration_ms: int, check=True):
 
 def press(key: str, check=True):
     if check:
-        map_check(type_string, tap)
-        admin_check(type_string, tap)
+        if not map_check(type_string, tap):
+            admin_check(type_string, tap)
     pydirectinput.keyDown(key)
     _held.add(key)
 
 
 def release(key: str, check=True):
     if check:
-        map_check(type_string, tap)
-        admin_check(type_string, tap)
+        if not map_check(type_string, tap):
+            admin_check(type_string, tap)
     pydirectinput.keyUp(key)
     _held.discard(key)
 

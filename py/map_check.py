@@ -29,11 +29,11 @@ def _type_to_gm(type_string: callable, tap: callable):
     _last_type_to_gm_check = now
 
     random_string = ["hello o-o", "hello", "heyyyy", "o-o"]
-    tap("enter", False)
+    tap("enter")
     sleep_ms(jitter(100, 10))
-    type_string(random_string[random.randint(0, len(random_string) - 1)], False)
+    type_string(random_string[random.randint(0, len(random_string) - 1)])
     sleep_ms(jitter(100, 10))
-    tap("enter", False)
+    tap("enter")
     sleep_ms(jitter(100, 10))
 
 def _play_alert():
@@ -52,16 +52,18 @@ def admin_check(type_string: callable, tap: callable):
     if now - _last_admin_check < 3.0:
         return
     _last_admin_check = now
-
+    stopped = False
     if is_template_in_region(_admin_text_tmpl, ADMIN_REGION, grayscale=True):
         print("[map_check] maple admin TEXT detected — pausing")
         _play_alert()
         request_stop()
+        stopped = True
     elif is_template_in_region(_admin_eye_tmpl, ADMIN_REGION, grayscale=True):
         print("[map_check] maple admin EYE detected — pausing")
         _play_alert()
         request_stop()
-
+        stopped = True
+    return stopped
 
 def map_check(type_string: callable, tap: callable):
     if NOCHECK:
@@ -71,8 +73,11 @@ def map_check(type_string: callable, tap: callable):
     if now - _last_check < 1.0:
         return
     _last_check = now
+    stopped = False
     if not is_template_in_region(_carcion_tmpl, MINIMAP_REGION, grayscale=True):
         print("[map_check] carcion not found on minimap — pausing")
         _play_alert()
         _type_to_gm(type_string, tap)
         request_stop()
+        stopped = True
+    return stopped
