@@ -131,7 +131,7 @@ def loot_carcion(rune_walker, last_rune_check_2):
     if last_rune_check_2 is not None and (time.monotonic() - last_rune_check_2) >= 15.0:
         if rune_walker.is_rune_inactive():
             print("\n[loot] -> rune on cooldown, skipping")
-        elif rune_walker.find_rune() is not None:
+        elif rune_walker.find_rune():
             print("\n[loot] -> rune detected, walking to it")
             rune_walker.go()
             return

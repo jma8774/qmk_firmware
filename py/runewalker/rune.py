@@ -16,15 +16,17 @@ from common import grab_region, match_template, is_template_on_screen, is_templa
 _IMAGES_DIR = Path(__file__).parent / "images"
 
 _DEFAULT_MINIMAP = {"top": 0, "left": 0, "width": 350, "height": 300}
+_DEFAULT_BUFFS_REGION = {"top": 39, "left": 1218, "width": 1911-1218, "height": 1983-39}
 
 _MATCH_THRESHOLD = 0.8
 _MARGIN_PX = 5
 
 
 class RuneWalker:
-    def __init__(self, pilot: RuneWalkerPilot, minimap_region: dict | None = None):
+    def __init__(self, pilot: RuneWalkerPilot, minimap_region: dict | None = None, buffs_region: dict | None = None):
         self.pilot = pilot
         self.minimap_region = minimap_region or dict(_DEFAULT_MINIMAP)
+        self.buffs_region = buffs_region or dict(_DEFAULT_BUFFS_REGION)
         self._move_seq = 0
 
         self._me_tmpl = cv2.imread(str(_IMAGES_DIR / "me_minimap.png"))
@@ -51,15 +53,7 @@ class RuneWalker:
     # Screen capture + template matching
     # ------------------------------------------------------------------
 
-    def find_me(self) -> bool:
-        """Return True if the player icon is visible on the minimap."""
-        try:
-            return is_template_in_region(self._me_tmpl, self.minimap_region)
-        except Exception as e:
-            self._log(f"find_me error: {e}")
-            return False
-
-    def _find_me_loc(self):
+    def find_me(self):
         """Return (cx, cy) of the player on the minimap, or None."""
         try:
             return match_template(grab_region(self.minimap_region), self._me_tmpl)
@@ -67,16 +61,7 @@ class RuneWalker:
             self._log(f"_find_me_loc error: {e}")
             return None
 
-    def find_rune(self) -> bool:
-        """Return True if a rune icon is visible on the minimap."""
-        try:
-            return (is_template_in_region(self._rune_tmpl, self.minimap_region, threshold=0.75)
-                    or is_template_in_region(self._rune_tmpl_2, self.minimap_region, threshold=0.75))
-        except Exception as e:
-            self._log(f"find_rune error: {e}")
-            return False
-
-    def _find_rune_loc(self):
+    def find_rune(self):
         """Return (cx, cy) of the rune on the minimap, or None."""
         try:
             minimap = grab_region(self.minimap_region)
@@ -90,7 +75,7 @@ class RuneWalker:
         if self._rune_inactive_tmpl is None:
             return False
         try:
-            ret = is_template_on_screen(self._rune_inactive_tmpl, threshold=0.8)
+            ret = is_template_in_region(self._rune_inactive_tmpl, self.buffs_region, threshold=0.8)
             if ret:
                 print("    [is_rune_inactive] found")
             else:
@@ -115,12 +100,12 @@ class RuneWalker:
     def go(self) -> bool:
         """Walk to the rune, protect, and interact.  Returns True on success."""
         self._move_seq = 0
-        rune_loc = self._find_rune_loc()
+        rune_loc = self.find_rune()
         if rune_loc is None:
             self._log("No rune detected on minimap")
             return False
 
-        me_loc = self._find_me_loc()
+        me_loc = self.find_me()
         me_miss_count = 0
         try_left = True
         last_down_count = [0]
@@ -138,16 +123,16 @@ class RuneWalker:
                 try_left = not try_left
                 self.pilot.rune_flash_jump(direction=direction)
                 sleep_ms(650)
-                me_loc = self._find_me_loc()
-                rune_loc = self._find_rune_loc()
+                me_loc = self.find_me()
+                rune_loc = self.find_rune()
                 continue
 
             me_miss_count = 0
             vec = self._vector(me_loc, rune_loc)
             self._log(f"Vector: {vec}")
             self._make_move(vec, last_down_count)
-            me_loc = self._find_me_loc()
-            rune_loc = self._find_rune_loc()
+            me_loc = self.find_me()
+            rune_loc = self.find_rune()
 
         if is_stopped():
             return False
