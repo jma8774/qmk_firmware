@@ -11,10 +11,9 @@ DEFAULT_TAP_JITTER_PCT = 15
 _held: set[str] = set()
 
 
-def _do_tap(key: str, ms: int, check: bool):
-    if check:
-        if not map_check(type_string, tap):
-            admin_check(type_string, tap)
+def _do_tap(key: str, ms: int):
+    if not map_check(type_string, tap):
+        admin_check(type_string, tap)
     pydirectinput.keyDown(key)
     try:
         sleep_ms(ms)
@@ -22,33 +21,31 @@ def _do_tap(key: str, ms: int, check: bool):
         pydirectinput.keyUp(key)
 
 
-def tap(key: str, check=True):
+def tap(key: str):
     """TAP(kc) — default ~60 ms with 15 % jitter."""
-    _do_tap(key, jitter(DEFAULT_TAP_MS, DEFAULT_TAP_JITTER_PCT), check)
+    _do_tap(key, jitter(DEFAULT_TAP_MS, DEFAULT_TAP_JITTER_PCT))
 
 
-def tap_d(key: str, duration_ms: int, check=True):
+def tap_d(key: str, duration_ms: int):
     """TAP_D(kc, ms) — custom duration with 15 % jitter."""
-    _do_tap(key, jitter(duration_ms, DEFAULT_TAP_JITTER_PCT), check)
+    _do_tap(key, jitter(duration_ms, DEFAULT_TAP_JITTER_PCT))
 
 
-def tap_raw(key: str, duration_ms: int, check=True):
+def tap_raw(key: str, duration_ms: int):
     """Tap with an exact duration (caller handles jitter)."""
-    _do_tap(key, duration_ms, check)
+    _do_tap(key, duration_ms)
 
 
-def press(key: str, check=True):
-    if check:
-        if not map_check(type_string, tap):
-            admin_check(type_string, tap)
+def press(key: str):
+    if not map_check(type_string, tap):
+        admin_check(type_string, tap)
     pydirectinput.keyDown(key)
     _held.add(key)
 
 
-def release(key: str, check=True):
-    if check:
-        if not map_check(type_string, tap):
-            admin_check(type_string, tap)
+def release(key: str):
+    if not map_check(type_string, tap):
+        admin_check(type_string, tap)
     pydirectinput.keyUp(key)
     _held.discard(key)
 
@@ -58,9 +55,9 @@ def release_all():
         pydirectinput.keyUp(k)
     _held.clear()
 
-def type_string(string: str, check=True):
+def type_string(string: str):
     for char in string:
         if char == " ":
-            tap("space", check)
+            tap("space")
         else:
-            tap(char, check)
+            tap(char)
