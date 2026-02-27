@@ -55,10 +55,3 @@ def release_all():
         pydirectinput.keyUp(k)
     _held.clear()
 
-def type_string(string: str):
-    for char in string:
-        if char == " ":
-            tap("space")
-        else:
-            tap(char)
-        sleep_ms(jitter(75, 10))

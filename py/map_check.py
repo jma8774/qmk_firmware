@@ -3,7 +3,7 @@ import winsound
 from pathlib import Path
 import sys
 import cv2
-from keys import type_string, tap, sleep_ms
+from keys import tap, sleep_ms
 
 from common import load_template, is_template_in_region
 from timing import request_stop, jitter
@@ -22,6 +22,14 @@ _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 
 
 def _type_to_gm():
+    def type_string(string: str):
+        for char in string:
+            if char == " ":
+                tap("space")
+            else:
+                tap(char)
+            sleep_ms(jitter(75, 10))
+
     random_string = ["hello o-o", "hello", "heyyyy", "o-o"]
     tap("enter")
     sleep_ms(jitter(100, 10))
