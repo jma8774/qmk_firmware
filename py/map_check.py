@@ -3,9 +3,11 @@ import winsound
 from pathlib import Path
 import sys
 import cv2
+from keys import type_string, tap, sleep_ms
 
-from common import grab_screen, is_template_on_screen, match_template, load_template, is_template_in_region
-from timing import request_stop
+from common import load_template, is_template_in_region
+from timing import request_stop, jitter
+import random
 
 NOCHECK = "nocheck" in sys.argv
 MINIMAP_REGION = {"top": 0, "left": 0, "width": 350, "height": 350}
@@ -19,10 +21,18 @@ _last_admin_check = 0.0
 _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 
 
+def _type_to_gm():
+    random_string = ["hello o-o", "hello", "heyyyy", "o-o"]
+    tap("enter")
+    sleep_ms(jitter(100, 10))
+    type_string(random_string[random.randint(0, len(random_string) - 1)])
+    sleep_ms(jitter(100, 10))
+    tap("enter")
+    sleep_ms(jitter(100, 10))
+
 def _play_alert():
     if _ALERT_PATH.exists():
         winsound.PlaySound(str(_ALERT_PATH), winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_LOOP)
-
 
 def stop_alert():
     winsound.PlaySound(None, winsound.SND_PURGE)
@@ -58,4 +68,5 @@ def map_check():
     if not is_template_in_region(_carcion_tmpl, MINIMAP_REGION, grayscale=True):
         print("[map_check] carcion not found on minimap — pausing")
         _play_alert()
+        _type_to_gm()
         request_stop()

@@ -131,7 +131,7 @@ def _policy_loop():
             _last_rune_check = now
             if _rune_walker.is_rune_inactive():
                 print("\n[policy] -> rune on cooldown, skipping")
-            elif _rune_walker.find_rune() is not None:
+            elif _rune_walker.find_rune():
                 print("\n[policy] -> rune detected, walking to it")
                 if teleport_setup_try(ignore_cooldown=True):
                     sleep_ms(jitter_up(675, 10))
