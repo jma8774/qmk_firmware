@@ -22,6 +22,7 @@ _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 
 
 def _type_to_gm(type_string: callable, tap: callable):
+    global _last_type_to_gm_check
     def type_string(string: str):
         for char in string:
             if char == " ":
