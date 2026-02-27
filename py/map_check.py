@@ -23,25 +23,17 @@ _ALERT_PATH = Path(__file__).parent / "sounds" / "alert_loud.wav"
 
 def _type_to_gm(type_string: callable, tap: callable):
     global _last_type_to_gm_check
-    def type_string(string: str):
-        for char in string:
-            if char == " ":
-                tap("space")
-            else:
-                tap(char)
-            sleep_ms(jitter(75, 10))
-
     now = time.monotonic()
     if now - _last_type_to_gm_check > 10.0:
         return
     _last_type_to_gm_check = now
 
     random_string = ["hello o-o", "hello", "heyyyy", "o-o"]
-    tap("enter")
+    tap("enter", False)
     sleep_ms(jitter(100, 10))
-    type_string(random_string[random.randint(0, len(random_string) - 1)])
+    type_string(random_string[random.randint(0, len(random_string) - 1)], False)
     sleep_ms(jitter(100, 10))
-    tap("enter")
+    tap("enter", False)
     sleep_ms(jitter(100, 10))
 
 def _play_alert():
