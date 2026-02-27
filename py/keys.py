@@ -44,8 +44,8 @@ def press(key: str):
 
 
 def release(key: str):
-    map_check()
-    admin_check()
+    map_check(type_string, tap)
+    admin_check(type_string, tap)
     pydirectinput.keyUp(key)
     _held.discard(key)
 
