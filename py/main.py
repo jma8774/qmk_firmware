@@ -24,12 +24,15 @@ class MarksPilot(RuneWalkerPilot):
     def rune_flash_jump(self, direction=None):
         if direction:
             press(direction)
+            sleep_ms(jitter(50, 20))
         flash_jump()
         if direction:
             release(direction)
+            sleep_ms(jitter(50, 20))
 
     def rune_jump(self):
         tap("e")
+        sleep_ms(jitter(50, 20))
 
     def rune_rope(self):
         rope(delayAfter=3000)

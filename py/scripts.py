@@ -32,7 +32,7 @@ def setup_carcion():
     if janus1.try_use():
         sleep_ms(jitter_up(650, DJ))
     tap("c")
-    sleep_ms(jitter(1600, DJ))
+    sleep_ms(jitter_up(1600, DJ))
     if janus2.try_use():
         sleep_ms(jitter_up(650, DJ))
     if random.random() < 0.5:
@@ -42,7 +42,7 @@ def setup_carcion():
         sleep_ms(jitter(50, DJ))
         dash()
     else:
-        tap('left')
+        tap('left', 100)
         sleep_ms(jitter(50, DJ))
         shoot()
         dash()

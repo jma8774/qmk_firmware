@@ -172,14 +172,18 @@ class RuneWalker:
         # Periodic jump to unstick from ropes/ladders
         if dx > 0:
             press("right")
+            sleep_ms(jitter(50, 20))
             if self._move_seq % 3 == 0:
                 self.pilot.rune_jump()
             release("right")
+            sleep_ms(jitter(50, 20))
         elif dx < 0:
             press("left")
+            sleep_ms(jitter(50, 20))
             if self._move_seq % 3 == 0:
                 self.pilot.rune_jump()
             release("left")
+            sleep_ms(jitter(50, 20))
 
         # Flash-jump when far away
         if abs(dx) > 40:
@@ -197,17 +201,18 @@ class RuneWalker:
             press(key)
             sleep_ms(walk_ms)
             release(key)
+            sleep_ms(jitter(50, 20))
 
         # Vertical movement
         if dy > 0:
-            last_down_count[0] += 1
             if last_down_count[0] % 2 == 0:
                 self.pilot.rune_jump_down()
             else:
                 press("down")
-                sleep_ms(jitter(2000, 20))
+                sleep_ms(jitter_up(1600, 20))
                 release("down")
                 sleep_ms(jitter(100, 20))
+            last_down_count[0] += 1
         elif dy < 0:
             self.pilot.rune_rope()
 
