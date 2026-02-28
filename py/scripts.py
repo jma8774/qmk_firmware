@@ -8,7 +8,7 @@ from job import (
     janus1, janus2, janus3, erda_fountain,
     teleport_setup_try, boss_buffs, guild_crit_buff, exp_buff, legion_meso_buff, wap_buff,
 )
-from common import is_enfolding3_teleport_reset_on_screen
+from common import is_enfolding3_teleport_reset_on_screen, is_nr1_teleport_reset_on_screen
 import random
 
 DJ = 10  # default wait-jitter percentage
@@ -106,6 +106,7 @@ def full_reset_carcion():
     sleep_ms(jitter(200, 20))
     dash()
     tap_d('right', 500)
+    sleep_ms(jitter(50, 20))
     rope(3000)
     jump_down_delay(700)
     jump_down_delay(700)
@@ -118,15 +119,130 @@ def loot_carcion(rune_walker, last_rune_check_2):
     if random.random() < 0.5:
         dash()
     jump_attack_delay(700)
-    tap("left")
-    sleep_ms(jitter(50, 20))
-    tap("left")
+    tap_d("left", jitter_up(100, 20))
     sleep_ms(jitter(50, 20))
     shoot()
     shoot()
     shoot()
     shoot()
+    sleep_ms(jitter_up(300, 20))
+    if last_rune_check_2 is not None and (time.monotonic() - last_rune_check_2) >= 15.0:
+        if rune_walker.is_rune_inactive():
+            print("\n[loot] -> rune on cooldown, skipping")
+        elif rune_walker.find_rune():
+            print("\n[loot] -> rune detected, walking to it")
+            rune_walker.go()
+            return
+        else:
+            print("\n[policy] -> no rune detected")
+    attempts = 0
+    while attempts == 0 or not is_enfolding3_teleport_reset_on_screen():
+        attempts += 1
+        if attempts % 10 == 0:
+            print(f"[loot] -> full reset ({attempts})")
+            full_reset_carcion()
+        tap_d('right', jitter_up(150, 20))
+        sleep_ms(jitter(50, 20))
+        teleport_reset()
+
+def setup_nr1():
+    if janus1.try_use():
+        sleep_ms(jitter_up(700, DJ))
+    dash()
+    jump_attack_delay(700)
+    tap_d('right', jitter_up(450, 10))
+    sleep_ms(jitter(50, 20))
+    if janus2.try_use():
+        sleep_ms(jitter_up(700, DJ))
+    dash()
+    jump_attack_delay(700)
+    sleep_ms(jitter(50, 20))
+    if janus3.try_use():
+        sleep_ms(jitter_up(700, DJ))
+    if erda_fountain.try_use():
+        sleep_ms(jitter_up(700, DJ))
+    attempts = 0
+    while attempts == 0 or not is_nr1_teleport_reset_on_screen():
+        attempts += 1
+        if attempts % 10 == 0:
+            print(f"[setup] -> full reset ({attempts})")
+            full_reset_nr1()
+        tap('right')
+        sleep_ms(jitter(50, 20))
+        teleport_reset()
+        sleep_ms(jitter(50, 20))
+
+def full_reset_nr1():
+    tap('left')
+    sleep_ms(jitter(50, 20))
+    tap('left')
+    sleep_ms(jitter(50, 20))
+    dash()
+    dash()
+    dash()
+    jump_down_delay(500)
+    jump_down_delay(500)
+    jump_down_delay(500)
+    press('left')
+    sleep_ms(jitter(50, 20))
+    tap('e')
+    sleep_ms(jitter(50, 20))
+    tap('e')
+    sleep_ms(jitter(50, 20))
+    tap('e')
+    sleep_ms(jitter(50, 20))
+    release('left')
+    sleep_ms(jitter(50, 20))
+    flash_jump()
+    flash_jump()
+    flash_jump()
+    flash_jump()
+    dash()
+    dash()
+    dash()
     tap('right')
+    sleep_ms(jitter(50, 20))
+    tap('right')
+    sleep_ms(jitter(200, 20))
+    dash()
+    tap_d('right', 950)
+    sleep_ms(jitter(50, 20))
+    rope(2000)
+    jump_down_delay(600)
+    teleport_setup_try(ignore_cooldown=True)
+    sleep_ms(jitter_up(650, 20))
+    teleport_reset(delayAfter=700)
+
+def loot_nr1(rune_walker, last_rune_check_2):
+    dash(delayAfter=jitter_up(50, 10))
+    dash()
+    jump_attack_delay(600, double_tap=True)
+    tap_d('left', jitter_up(75, 10))
+    sleep_ms(jitter(50, 20))
+    shoot()
+    shoot()
+    shoot()
+    if random.random() < 0.5:
+        shoot()
+    tap_d('right', jitter_up(200, 10))
+    sleep_ms(jitter(50, 20))
+    dash(delayAfter=jitter_up(50, 10))
+    dash()
+    jump_attack_delay(600, double_tap=True)
+    tap_d('right', jitter_up(200, 10))
+    shoot()
+    shoot()
+    # if random.random() < 0.5:
+    #     tap('left')
+    #     sleep_ms(jitter(50, 20))
+    #     tap('left')
+    #     jump_attack_delay(600)
+    #     jump_attack_delay(600)
+    #     if random.random() < 0.5:
+    #         jump_attack_delay(600)
+    #     tap_d('right', jitter_up(200, 10))
+    #     if random.random() < 0.5:
+    #         jump_attack_delay(600)
     sleep_ms(jitter(50, 20))
     if last_rune_check_2 is not None and (time.monotonic() - last_rune_check_2) >= 15.0:
         if rune_walker.is_rune_inactive():
@@ -138,12 +254,12 @@ def loot_carcion(rune_walker, last_rune_check_2):
         else:
             print("\n[policy] -> no rune detected")
     attempts = 0
-    while not is_enfolding3_teleport_reset_on_screen():
+    while attempts == 0 or not is_nr1_teleport_reset_on_screen():
         attempts += 1
         if attempts % 10 == 0:
             print(f"[loot] -> full reset ({attempts})")
-            full_reset_carcion()
-        tap('right')
+            full_reset_nr1()
+        tap_d('right', jitter_up(150, 20))
         sleep_ms(jitter(50, 20))
         teleport_reset()
 
@@ -154,10 +270,11 @@ def buff_script():
         sleep_ms(jitter_up(1500, DJ))
     if not NO_CONSUMABLE:
         if guild_crit_buff.try_use():
-            sleep_ms(jitter_up(500, DJ))
+            sleep_ms(jitter_up(1000, DJ))
         if exp_buff.try_use():
-            sleep_ms(jitter_up(500, DJ))
+            sleep_ms(jitter_up(1000, DJ))
         if legion_meso_buff.try_use():
-            sleep_ms(jitter_up(500, DJ))
+            sleep_ms(jitter_up(1000, DJ))
         if wap_buff.try_use():
-            sleep_ms(jitter_up(500, DJ))
+            sleep_ms(jitter_up(1000, DJ))
+

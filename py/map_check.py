@@ -13,6 +13,7 @@ NOCHECK = "nocheck" in sys.argv
 MINIMAP_REGION = {"top": 0, "left": 0, "width": 350, "height": 350}
 ADMIN_REGION = {"top": 424, "left": 511, "width": 1494-511, "height": 831-424}
 _carcion_tmpl = cv2.cvtColor(load_template("carcion.png"), cv2.COLOR_BGR2GRAY)
+_tallahart_tmpl = cv2.cvtColor(load_template("tallahart.png"), cv2.COLOR_BGR2GRAY)
 _admin_eye_tmpl = cv2.cvtColor(load_template("maple_admin_eye.png"), cv2.COLOR_BGR2GRAY)
 _admin_text_tmpl = cv2.cvtColor(load_template("maple_admin_text.png"), cv2.COLOR_BGR2GRAY)
 _last_check = 0.0
@@ -31,13 +32,14 @@ def _type_to_gm(type_string: callable, tap: callable):
     _last_type_to_gm_check = now
 
     print("[map_check] type to gm check")
-    random_string = ["hello o-o", "hello", "heyyyy", "o-o"]
-    tap("enter")
-    sleep_ms(jitter(100, 10))
-    type_string(random_string[random.randint(0, len(random_string) - 1)])
-    sleep_ms(jitter(100, 10))
-    tap("enter")
-    sleep_ms(jitter(100, 10))
+    random_string = ["hello o-o", "hello", "hey there", "o-o"]
+    sleep_ms(jitter(2000, 10))
+    tap("enter", check=False)
+    sleep_ms(jitter(200, 10))
+    type_string(random_string[random.randint(0, len(random_string) - 1)], check=False)
+    sleep_ms(jitter(200, 10))
+    tap("enter", check=False)
+    sleep_ms(jitter(200, 10))
 
 def _play_alert():
     if _ALERT_PATH.exists():
@@ -52,17 +54,17 @@ def admin_check(type_string: callable, tap: callable):
         return
     global _last_admin_check
     now = time.monotonic()
-    if now - _last_admin_check < 3.0:
+    if now - _last_admin_check < 2.0:
         return
     _last_admin_check = now
     stopped = False
-    if is_template_in_region(_admin_text_tmpl, ADMIN_REGION, grayscale=True):
+    if is_template_in_region(_admin_text_tmpl, ADMIN_REGION, grayscale=True, name="girl_text"):
         print("[map_check] maple admin TEXT detected — pausing")
         notify("ADMIN TEXT detected — bot paused")
         _play_alert()
         request_stop()
         stopped = True
-    elif is_template_in_region(_admin_eye_tmpl, ADMIN_REGION, grayscale=True):
+    elif is_template_in_region(_admin_eye_tmpl, ADMIN_REGION, grayscale=True, name="girl_eye"):
         print("[map_check] maple admin EYE detected — pausing")
         notify("ADMIN EYE detected — bot paused")
         _play_alert()
@@ -79,9 +81,14 @@ def map_check(type_string: callable, tap: callable):
         return
     _last_check = now
     stopped = False
+<<<<<<< Updated upstream
     if not is_template_in_region(_carcion_tmpl, MINIMAP_REGION, grayscale=True):
         print("[map_check] carcion not found on minimap — pausing")
         notify("Map lost (carcion not on minimap) — bot paused")
+=======
+    if not is_template_in_region(_tallahart_tmpl, MINIMAP_REGION, grayscale=True, name="tallahart_minimap"):
+        print("[map_check] tallahart not found on minimap — pausing")
+>>>>>>> Stashed changes
         _play_alert()
         _type_to_gm(type_string, tap)
         request_stop()

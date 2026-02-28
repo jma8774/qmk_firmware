@@ -11,15 +11,15 @@ import cv2
 from runewalker.rune_abstract import RuneWalkerPilot
 from keys import press, release
 from timing import sleep_ms, is_stopped, jitter, jitter_up
-from common import grab_region, match_template, is_template_on_screen, is_template_in_region
+from common import grab_region, match_template, is_template_in_region
 
 _IMAGES_DIR = Path(__file__).parent / "images"
 
 _DEFAULT_MINIMAP = {"top": 0, "left": 0, "width": 350, "height": 300}
-_DEFAULT_BUFFS_REGION = {"top": 39, "left": 1218, "width": 1911-1218, "height": 1983-39}
+_DEFAULT_BUFFS_REGION = {"top": 39, "left": 1218, "width": 1904-1218, "height": 245-39}
 
 _MATCH_THRESHOLD = 0.8
-_MARGIN_PX = 5
+_MARGIN_PX = 2
 
 
 class RuneWalker:
@@ -75,7 +75,7 @@ class RuneWalker:
         if self._rune_inactive_tmpl is None:
             return False
         try:
-            ret = is_template_in_region(self._rune_inactive_tmpl, self.buffs_region, threshold=0.8)
+            ret = is_template_in_region(self._rune_inactive_tmpl, self.buffs_region, threshold=0.8, name="rune_inactive")
             if ret:
                 print("    [is_rune_inactive] found")
             else:
@@ -88,7 +88,7 @@ class RuneWalker:
     def _has_rune_buff(self) -> bool:
         """Check the full screen for the rune-buff icon."""
         try:
-            return is_template_on_screen(self._rune_buff_tmpl, threshold=0.75)
+            return is_template_in_region(self._rune_buff_tmpl, self.buffs_region, threshold=0.75, name="rune_buff")
         except Exception as e:
             self._log(f"_has_rune_buff error: {e}")
             return False
@@ -105,6 +105,7 @@ class RuneWalker:
             self._log("No rune detected on minimap")
             return False
 
+        moves_left = 20
         me_loc = self.find_me()
         me_miss_count = 0
         try_left = True
@@ -133,6 +134,11 @@ class RuneWalker:
             self._make_move(vec, last_down_count)
             me_loc = self.find_me()
             rune_loc = self.find_rune()
+            moves_left -= 1
+            if moves_left <= 0:
+                self._log("Too many moves, aborting")
+                self.pilot.done()
+                return False
 
         if is_stopped():
             return False

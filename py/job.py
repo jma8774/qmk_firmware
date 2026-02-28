@@ -4,7 +4,6 @@ from pathlib import Path
 
 from keys import tap, tap_raw, press, release
 from timing import jitter, jitter_up, sleep_ms, random_range
-from common import load_template, is_template_on_screen
 
 DJ = 10  # default wait-jitter percentage (matches DEFAULT_WAIT_JITTER_PCT)
 
@@ -26,6 +25,7 @@ class Cooldown:
         if now < self._ready_at:
             return False
         tap(self.key)
+        # No need for sleep here
         self._ready_at = now + self.cd_ms / 1000.0
         print(f"    [{self.name}] fired")
         return True
@@ -92,10 +92,10 @@ janus2        = Cooldown("janus2",        "n",     57_000)
 janus3        = Cooldown("janus3",        "n",     57_000)
 boss_buffs    = Cooldown("boss_buffs",    "pageup", 119_000)
 
-guild_crit_buff = PersistedCooldown("guild_crit_buff", "f5", 30 * 60 * 1000 + 10) # 30 minutes and 10 seconds
-exp_buff = PersistedCooldown("exp_buff", "f9", 30 * 60 * 1000 + 10) # 30 minutes and 10 seconds
-legion_meso_buff = PersistedCooldown("legion_meso_buff", "f10", 30 * 60 * 1000 + 10) # 30 minutes and 10 seconds
-wap_buff = PersistedCooldown("wap_buff", "f12", 30 * 60 * 1000 + 10) # 30 minutes and 10 seconds
+guild_crit_buff = PersistedCooldown("guild_crit_buff", "f5", (30 * 60 * 1000) + (5 * 1000)) # 30 minutes and 10 seconds
+exp_buff = PersistedCooldown("exp_buff", "f9", (30 * 60 * 1000) + (5 * 1000)) # 30 minutes and 10 seconds
+legion_meso_buff = PersistedCooldown("legion_meso_buff", "f10", (30 * 60 * 1000) + (5 * 1000)) # 30 minutes and 10 seconds
+wap_buff = PersistedCooldown("wap_buff", "f12", (30 * 60 * 1000) + (5 * 1000)) # 30 minutes and 10 seconds
 
 # ---------------------------------------------------------------------------
 # Teleport setup (special combo with variable cooldown)
@@ -121,6 +121,7 @@ def teleport_setup_try(ignore_cooldown: bool = False) -> bool:
         sleep_ms(jitter(70, 20))
     finally:
         release("down")
+    # No need for sleep here
 
     _teleport_setup_ready_at = now + random_range(25_000, 67, 100) / 1000.0
     print("    [teleport_setup] fired")
@@ -133,7 +134,7 @@ def teleport_setup_try(ignore_cooldown: bool = False) -> bool:
 
 def shoot():
     tap("q")
-    sleep_ms(jitter_up(600, DJ))
+    sleep_ms(jitter_up(610, DJ))
 
 
 def rope(delayAfter: int = 1600):
@@ -141,7 +142,7 @@ def rope(delayAfter: int = 1600):
     sleep_ms(jitter_up(delayAfter, DJ))
 
 
-def dash():
+def dash(delayAfter: int = 620):
     tap("alt")
     sleep_ms(jitter_up(620, 5))
 
@@ -161,9 +162,12 @@ def jump_attack():
     tap("q")
     sleep_ms(jitter_up(620, 5))
 
-def jump_attack_delay(delayAfter):
+def jump_attack_delay(delayAfter, double_tap=False):
     tap("e")
     sleep_ms(jitter_up(70, DJ))
+    if double_tap:
+        tap("e")
+        sleep_ms(jitter(30, DJ))
     tap("e")
     sleep_ms(jitter(200, DJ))
     tap("q")

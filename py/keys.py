@@ -11,8 +11,8 @@ DEFAULT_TAP_JITTER_PCT = 15
 _held: set[str] = set()
 
 
-def _do_tap(key: str, ms: int):
-    if not map_check(type_string, tap):
+def _do_tap(key: str, ms: int, check: bool = True):
+    if check and not map_check(type_string, tap):
         admin_check(type_string, tap)
     pydirectinput.keyDown(key)
     try:
@@ -21,9 +21,9 @@ def _do_tap(key: str, ms: int):
         pydirectinput.keyUp(key)
 
 
-def tap(key: str):
+def tap(key: str, check: bool = True):
     """TAP(kc) — default ~60 ms with 15 % jitter."""
-    _do_tap(key, jitter(DEFAULT_TAP_MS, DEFAULT_TAP_JITTER_PCT))
+    _do_tap(key, jitter(DEFAULT_TAP_MS, DEFAULT_TAP_JITTER_PCT), check)
 
 
 def tap_d(key: str, duration_ms: int):
@@ -55,9 +55,11 @@ def release_all():
         pydirectinput.keyUp(k)
     _held.clear()
 
-def type_string(string: str):
+def type_string(string: str, check: bool = True):
+    print(f"[keys] typing string: {string}")
     for char in string:
         if char == " ":
-            tap("space")
+            tap("space", check)
         else:
-            tap(char)
+            tap(char, check)
+        sleep_ms(jitter(50, 10))

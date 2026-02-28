@@ -18,11 +18,18 @@ def _run_starcatching():
         sleep_ms(50)
         tap("space")
         sleep_ms(50)
-        sleep_ms(1600)
         tap("space")
         sleep_ms(50)
-        tap("space")
-        sleep_ms(2750)
+    # while True:
+    #     tap("space")
+    #     sleep_ms(50)
+    #     tap("space")
+    #     sleep_ms(50)
+    #     sleep_ms(1600)
+    #     tap("space")
+    #     sleep_ms(50)
+    #     tap("space")
+    #     sleep_ms(2750)
 
 def _run():
     try:
