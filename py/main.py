@@ -12,6 +12,7 @@ from runewalker import RuneWalker, RuneWalkerPilot
 from common import load_template, is_template_on_screen, is_enfolding3_teleport_reset_on_screen
 from job import teleport_setup_try
 from map_check import stop_alert
+from notify import notify
 import random
 
 SETUP_INTERVAL_S = 46.0
@@ -171,6 +172,7 @@ def _run():
         pass
     finally:
         release_all()
+        notify("Bot paused")
         print("[bot] paused")
 
 
