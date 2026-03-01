@@ -4,16 +4,11 @@ Uses OpenCV template-matching on an mss screen-grab instead of pyautogui.
 """
 
 import math
-from pathlib import Path
-
-import cv2
 
 from runewalker.rune_abstract import RuneWalkerPilot
 from keys import press, release
 from timing import sleep_ms, is_stopped, jitter, jitter_up
-from common import grab_region, match_template, is_template_in_region
-
-_IMAGES_DIR = Path(__file__).parent / "images"
+from common import grab_region, match_template, is_template_in_region, load_template
 
 _DEFAULT_MINIMAP = {"top": 0, "left": 0, "width": 350, "height": 300}
 _DEFAULT_BUFFS_REGION = {"top": 39, "left": 1218, "width": 1904-1218, "height": 245-39}
@@ -29,17 +24,11 @@ class RuneWalker:
         self.buffs_region = buffs_region or dict(_DEFAULT_BUFFS_REGION)
         self._move_seq = 0
 
-        self._me_tmpl = cv2.imread(str(_IMAGES_DIR / "me_minimap.png"))
-        self._rune_tmpl = cv2.imread(str(_IMAGES_DIR / "rune_minimap.png"))
-        self._rune_tmpl_2 = cv2.imread(str(_IMAGES_DIR / "rune_minimap2.png"))
-        self._rune_buff_tmpl = cv2.imread(str(_IMAGES_DIR / "rune_buff.png"))
-        self._rune_inactive_tmpl = cv2.imread(str(_IMAGES_DIR / "rune_inactive_minimap.png"))
-        if self._me_tmpl is None:
-            raise FileNotFoundError(f"Missing {_IMAGES_DIR / 'me_minimap.png'}")
-        if self._rune_tmpl is None:
-            raise FileNotFoundError(f"Missing {_IMAGES_DIR / 'rune_minimap.png'}")
-        if self._rune_buff_tmpl is None:
-            raise FileNotFoundError(f"Missing {_IMAGES_DIR / 'rune_buff.png'}")
+        self._me_tmpl = load_template("me_minimap.png")
+        self._rune_tmpl = load_template("rune_minimap.png")
+        self._rune_tmpl_2 = load_template("rune_minimap2.png")
+        self._rune_buff_tmpl = load_template("rune_buff.png")
+        self._rune_inactive_tmpl = load_template("rune_inactive_minimap.png")
 
     # ------------------------------------------------------------------
     # Logging

@@ -2,19 +2,17 @@ import time
 import winsound
 from pathlib import Path
 
-import cv2
-
-from common import load_template, is_template_in_region
+from common import load_template_gray, is_template_in_region
 from timing import request_stop, jitter, sleep_ms
 from notify import notify
 from config import NOCHECK
 import random
 MINIMAP_REGION = {"top": 0, "left": 0, "width": 350, "height": 350}
 ADMIN_REGION = {"top": 424, "left": 511, "width": 1494-511, "height": 831-424}
-_carcion_tmpl = cv2.cvtColor(load_template("carcion.png"), cv2.COLOR_BGR2GRAY)
-_tallahart_tmpl = cv2.cvtColor(load_template("tallahart.png"), cv2.COLOR_BGR2GRAY)
-_admin_eye_tmpl = cv2.cvtColor(load_template("maple_admin_eye.png"), cv2.COLOR_BGR2GRAY)
-_admin_text_tmpl = cv2.cvtColor(load_template("maple_admin_text.png"), cv2.COLOR_BGR2GRAY)
+_carcion_tmpl = load_template_gray("carcion.png")
+_tallahart_tmpl = load_template_gray("tallahart.png")
+_admin_eye_tmpl = load_template_gray("maple_admin_eye.png")
+_admin_text_tmpl = load_template_gray("maple_admin_text.png")
 _last_check = 0.0
 _last_admin_check = 0.0
 _last_type_to_gm_check = None

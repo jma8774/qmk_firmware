@@ -73,13 +73,18 @@ def is_template_in_region(template: np.ndarray, region: dict, threshold: float =
     return ret
 
 
-def load_template(name: str, root=_IMAGES_DIR) -> np.ndarray:
-    """Load an image from the shared images/ directory. Raises if missing."""
-    path = root / name
+def load_template(name: str) -> np.ndarray:
+    """Load a BGR image from the shared images/ directory. Raises if missing."""
+    path = _IMAGES_DIR / name
     tmpl = cv2.imread(str(path))
     if tmpl is None:
         raise FileNotFoundError(f"Missing {path}")
     return tmpl
+
+
+def load_template_gray(name: str) -> np.ndarray:
+    """Load an image from images/ and convert it to grayscale."""
+    return cv2.cvtColor(load_template(name), cv2.COLOR_BGR2GRAY)
 
 
 # ---------------------------------------------------------------------------
