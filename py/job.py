@@ -185,10 +185,10 @@ def jump_down_delay(ms: int):
     sleep_ms(jitter_up(ms, DJ))
 
 
-def teleport_reset(delayAfter: int = 650):
+def teleport_reset(delayAfter: int = 750):
     tap("x")
     sleep_ms(jitter(60, DJ))
     tap("x")
     sleep_ms(jitter(60, DJ))
     tap("x")
-    sleep_ms(jitter_up(delayAfter, DJ))
+    sleep_ms(jitter_up(delayAfter, 10))

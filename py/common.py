@@ -98,8 +98,8 @@ def is_enfolding3_teleport_reset_on_screen(threshold: float = 0.75) -> bool:
     return ret
 
 _nr1_tmpl = load_template("nr1_teleport_reset.png")
-_nr1_region = {"top": 316, "left": 52, "width": 168-52, "height": 470-316}
-def is_nr1_teleport_reset_on_screen(threshold: float = 0.75) -> bool:
+_nr1_region = {"top": 250, "left": 25, "width": 300-25, "height": 470-250}
+def is_nr1_teleport_reset_on_screen(threshold: float = 0.65) -> bool:
     """Return True if the nr1 teleport-reset icon is visible on screen."""
     ret = is_template_in_region(_nr1_tmpl, _nr1_region, threshold, name="nr1_teleport_reset")
     if ret:

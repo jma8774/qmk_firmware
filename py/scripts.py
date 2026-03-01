@@ -70,7 +70,6 @@ def setup_carcion():
         tap('right')
         sleep_ms(jitter(50, 20))
         teleport_reset()
-        sleep_ms(jitter(50, 20))
 
 def full_reset_carcion():
     tap('left')
@@ -112,7 +111,7 @@ def full_reset_carcion():
     jump_down_delay(700)
     teleport_setup_try(ignore_cooldown=True)
     sleep_ms(jitter_up(650, 20))
-    teleport_reset(delayAfter=700)
+    teleport_reset()
 
 
 def loot_carcion(rune_walker, last_rune_check_2):
@@ -167,10 +166,10 @@ def setup_nr1():
         if attempts % 10 == 0:
             print(f"[setup] -> full reset ({attempts})")
             full_reset_nr1()
-        tap('right')
-        sleep_ms(jitter(50, 20))
-        teleport_reset()
-        sleep_ms(jitter(50, 20))
+        else:
+            tap('right')
+            sleep_ms(jitter(50, 20))
+            teleport_reset()
 
 def full_reset_nr1():
     tap('left')
@@ -210,8 +209,8 @@ def full_reset_nr1():
     rope(2000)
     jump_down_delay(600)
     teleport_setup_try(ignore_cooldown=True)
-    sleep_ms(jitter_up(650, 20))
-    teleport_reset(delayAfter=700)
+    sleep_ms(jitter_up(700, 20))
+    teleport_reset()
 
 def loot_nr1(rune_walker, last_rune_check_2):
     dash(delayAfter=jitter_up(50, 10))
@@ -259,22 +258,23 @@ def loot_nr1(rune_walker, last_rune_check_2):
         if attempts % 10 == 0:
             print(f"[loot] -> full reset ({attempts})")
             full_reset_nr1()
-        tap_d('right', jitter_up(150, 20))
-        sleep_ms(jitter(50, 20))
-        teleport_reset()
+        else:
+            tap_d('right', jitter_up(150, 20))
+            sleep_ms(jitter(50, 20))
+            teleport_reset()
 
 def buff_script():
     if teleport_setup_try():
         sleep_ms(jitter_up(675, DJ))
     if boss_buffs.try_use():
-        sleep_ms(jitter_up(1500, DJ))
+        sleep_ms(jitter_up(800, DJ))
     if not NO_CONSUMABLE:
         if guild_crit_buff.try_use():
-            sleep_ms(jitter_up(1000, DJ))
+            sleep_ms(jitter_up(550, DJ))
         if exp_buff.try_use():
-            sleep_ms(jitter_up(1000, DJ))
+            sleep_ms(jitter_up(550, DJ))
         if legion_meso_buff.try_use():
-            sleep_ms(jitter_up(1000, DJ))
+            sleep_ms(jitter_up(550, DJ))
         if wap_buff.try_use():
-            sleep_ms(jitter_up(1000, DJ))
+            sleep_ms(jitter_up(550, DJ))
 

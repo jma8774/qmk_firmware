@@ -66,7 +66,7 @@ class MarksPilot(RuneWalkerPilot):
                 sleep_ms(jitter(100, 20))
                 release('right')
                 sleep_ms(jitter_up(500, 20))
-                teleport_reset(delayAfter=800)
+                teleport_reset()
             else:
                 press('left')
                 sleep_ms(jitter(100, 20))
@@ -78,7 +78,7 @@ class MarksPilot(RuneWalkerPilot):
                 sleep_ms(jitter(50, 20))
                 shoot()
                 jump_attack()
-                teleport_reset(delayAfter=800)
+                teleport_reset()
 
         sleep_ms(jitter(200, 20))
         do()
@@ -88,7 +88,8 @@ class MarksPilot(RuneWalkerPilot):
             if attempts % 20 == 0:
                 print(f"[done] -> full reset ({attempts})")
                 full_reset_nr1()
-            do()
+            else:
+                do()
 
 _thread: threading.Thread | None = None
 _first_run = True
@@ -177,7 +178,6 @@ def _run():
         pass
     finally:
         release_all()
-        notify("Bot paused")
         print("[bot] paused")
 
 

@@ -60,13 +60,13 @@ def admin_check(type_string: callable, tap: callable):
     stopped = False
     if is_template_in_region(_admin_text_tmpl, ADMIN_REGION, grayscale=True, name="girl_text"):
         print("[map_check] maple admin TEXT detected — pausing")
-        notify("ADMIN TEXT detected — bot paused")
+        notify("ADMIN TEXT detected — bot paused", numberOfSends=5)
         _play_alert()
         request_stop()
         stopped = True
     elif is_template_in_region(_admin_eye_tmpl, ADMIN_REGION, grayscale=True, name="girl_eye"):
         print("[map_check] maple admin EYE detected — pausing")
-        notify("ADMIN EYE detected — bot paused")
+        notify("ADMIN EYE detected — bot paused", numberOfSends=5)
         _play_alert()
         request_stop()
         stopped = True
@@ -81,14 +81,9 @@ def map_check(type_string: callable, tap: callable):
         return
     _last_check = now
     stopped = False
-<<<<<<< Updated upstream
-    if not is_template_in_region(_carcion_tmpl, MINIMAP_REGION, grayscale=True):
-        print("[map_check] carcion not found on minimap — pausing")
-        notify("Map lost (carcion not on minimap) — bot paused")
-=======
     if not is_template_in_region(_tallahart_tmpl, MINIMAP_REGION, grayscale=True, name="tallahart_minimap"):
         print("[map_check] tallahart not found on minimap — pausing")
->>>>>>> Stashed changes
+        notify("Map lost (carcion not on minimap) — bot paused", numberOfSends=5)
         _play_alert()
         _type_to_gm(type_string, tap)
         request_stop()
