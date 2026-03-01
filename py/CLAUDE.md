@@ -63,3 +63,26 @@ The loop runs in a daemon thread and follows this priority order each iteration:
 ### Jitter convention
 
 All timing calls use `jitter(base_ms, pct)` (±pct%), `jitter_up` (never under base), or `jitter_down` (never over base). The default key-tap duration is 60 ms with 15% jitter (`DEFAULT_TAP_MS`, `DEFAULT_TAP_JITTER_PCT` in `keys.py`).
+
+### Key action delay rule
+
+Every call to `tap()`, `tap_d()`, `press()`, or `release()` MUST be followed by a `sleep_ms()` call before the next key action or end of block. This makes input timing look human. The only exceptions are inside `keys.py` itself and `release_all()`.
+
+Prefer `jitter_up` for delays after key actions (ensures a minimum delay is always present, unlike `jitter` which can shrink below base).
+
+Correct:
+
+    press("right")
+    sleep_ms(jitter_up(50, 20))
+    tap("e")
+    sleep_ms(jitter_up(100, 20))
+    release("right")
+    sleep_ms(jitter_up(50, 20))
+
+Wrong:
+
+    press("right")
+    tap("e")        # no delay after press
+    release("right") # no delay after tap
+
+Run `python lint_delays.py` to check for violations.

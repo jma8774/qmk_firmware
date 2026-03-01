@@ -120,8 +120,7 @@ def teleport_setup_try(ignore_cooldown: bool = False) -> bool:
         tap_raw("x", jitter(60, 20))
         sleep_ms(jitter(70, 20))
     finally:
-        release("down")
-    # No need for sleep here
+        release("down")  # noqa — delay follows after try/finally
 
     _teleport_setup_ready_at = now + random_range(25_000, 67, 100) / 1000.0
     print("    [teleport_setup] fired")
@@ -181,7 +180,7 @@ def jump_down_delay(ms: int):
         tap("e")
         sleep_ms(jitter(50, DJ))
     finally:
-        release("down")
+        release("down")  # noqa — delay follows after try/finally
     sleep_ms(jitter_up(ms, DJ))
 
 
