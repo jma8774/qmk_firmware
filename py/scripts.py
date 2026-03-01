@@ -1,4 +1,3 @@
-import sys
 import time
 
 from keys import tap, tap_d, press, release
@@ -9,12 +8,12 @@ from job import (
     teleport_setup_try, boss_buffs, guild_crit_buff, exp_buff, legion_meso_buff, wap_buff,
 )
 from common import is_enfolding3_teleport_reset_on_screen, is_nr1_teleport_reset_on_screen
+from config import NO_CONSUMABLE, RESET_CONSUMABLE
 import random
 
 DJ = 10  # default wait-jitter percentage
-NO_CONSUMABLE = "noconsumable" in sys.argv
 
-if "resetconsumable" in sys.argv:
+if RESET_CONSUMABLE:
     print("\n[resetconsumable] -> resetting consumables")
     guild_crit_buff.reset()
     exp_buff.reset()

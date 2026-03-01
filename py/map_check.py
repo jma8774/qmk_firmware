@@ -1,15 +1,14 @@
 import time
 import winsound
 from pathlib import Path
-import sys
+
 import cv2
 
 from common import load_template, is_template_in_region
 from timing import request_stop, jitter, sleep_ms
 from notify import notify
+from config import NOCHECK
 import random
-
-NOCHECK = "nocheck" in sys.argv
 MINIMAP_REGION = {"top": 0, "left": 0, "width": 350, "height": 350}
 ADMIN_REGION = {"top": 424, "left": 511, "width": 1494-511, "height": 831-424}
 _carcion_tmpl = cv2.cvtColor(load_template("carcion.png"), cv2.COLOR_BGR2GRAY)

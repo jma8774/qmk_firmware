@@ -1,9 +1,19 @@
 import json
+import os
 import threading
 import urllib.request
 import time
+from pathlib import Path
 
-_WEBHOOK_URL = "https://discord.com/api/webhooks/1477317205405335817/kcerkhwV5-DooRsyN1rhGulmDJ4hkM6G5yh-H0RfUE-YiGX77XVT8SXcdRaFPFFRg7Rj"
+_ENV_PATH = Path(__file__).parent / ".env"
+if _ENV_PATH.exists():
+    for line in _ENV_PATH.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            key, _, value = line.partition("=")
+            os.environ.setdefault(key.strip(), value.strip())
+
+_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
 _MENTION = "<@152957206025863168>"
 
 

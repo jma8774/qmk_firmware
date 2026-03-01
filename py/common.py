@@ -1,13 +1,13 @@
 """Shared screen-capture and template-matching utilities."""
 
 from pathlib import Path
-import sys
+
 import cv2
 import dxcam
 import numpy as np
 import time
 
-TEMPLATE_LOG = "log" in sys.argv
+from config import TEMPLATE_LOG
 _IMAGES_DIR = Path(__file__).parent / "images"
 
 DEFAULT_THRESHOLD = 0.8
