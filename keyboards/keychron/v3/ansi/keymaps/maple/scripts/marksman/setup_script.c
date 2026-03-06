@@ -38,3 +38,7 @@ const cmd_t SETUP_CARCION[] = {
     TELEPORT_RESET(),
     END(),
 };
+
+const cmd_t SETUP_TALLAHART[] = {
+    END(),
+};

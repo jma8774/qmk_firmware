@@ -5,3 +5,4 @@
 #include "../../engine/script_engine.h"
 
 extern const cmd_t SETUP_CARCION[];
+extern const cmd_t SETUP_TALLAHART[];

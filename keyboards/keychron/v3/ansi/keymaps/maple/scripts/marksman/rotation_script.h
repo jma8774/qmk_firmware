@@ -6,3 +6,4 @@
 
 // Normal rotation
 extern const cmd_t ROTATION_CARCION[];
+extern const cmd_t ROTATION_TALLAHART[];

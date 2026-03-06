@@ -8,3 +8,8 @@ const cmd_t ROTATION_CARCION[] = {
     SHOOT(),
     END(),
 };
+
+const cmd_t ROTATION_TALLAHART[] = {
+    SHOOT(),
+    END(),
+};

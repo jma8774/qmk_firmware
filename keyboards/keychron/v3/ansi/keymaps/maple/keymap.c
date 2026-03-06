@@ -139,7 +139,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // matrix_scan_user  –  policy layer (called every ~1 ms)
 // ---------------------------------------------------------------------------
 // static uint32_t gate1_time_ms = 53000;
-static uint32_t carcion_time_ms = 46000;
+// static uint32_t carcion_time_ms = 46000;
+static uint32_t tallahart_time_ms = 46000;
 // static uint32_t odium_time_ms = 48000;
 void matrix_scan_user(void) {
     if (!running) {
@@ -156,19 +157,14 @@ void matrix_scan_user(void) {
 
     // Script just finished — decide what comes next
     if (runner.mode == MODE_ROTATION) {
-        // Real bot
-        // if (timer_elapsed32(last_setup_time_ms) >= random_range(SETUP_INTERVAL_MS, 70, 100))  {
-        //     uprintf("\n");
-        //     uprintf("[scan] rotation -> setup (interval elapsed)\n");
-        //     runner_start(&runner, SETUP_CERNIUM, MODE_SETUP);
-        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= carcion_time_ms)  {
+        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= random_range(tallahart_time_ms, 70, 100))  {
             uprintf("\n");
             uprintf("[scan] rotation -> setup (interval elapsed)\n");
-            runner_start(&runner, SETUP_CARCION, MODE_SETUP);
+            runner_start(&runner, SETUP_TALLAHART, MODE_SETUP);
         } else if (timer_elapsed32(last_loot_time_ms) >= random_range(LOOT_INTERVAL_MS, 80, 100)) {
             uprintf("\n");
             uprintf("[scan] rotation -> loot (interval elapsed)\n");
-            runner_start(&runner, LOOT_CARCION, MODE_LOOT);
+            runner_start(&runner, LOOT_EMPTY, MODE_LOOT);
         } else if (timer_elapsed32(last_buff_time_ms) >= random_range(BUFF_INTERVAL_MS, 70, 100)) {
             uprintf("\n");
             uprintf("[scan] rotation -> buff (interval elapsed)\n");
@@ -176,22 +172,22 @@ void matrix_scan_user(void) {
         } else {
             uprintf("\n");
             uprintf("[scan] rotation -> rotation (continue)\n");
-            runner_start(&runner, ROTATION_CARCION, MODE_ROTATION);
+            runner_start(&runner, ROTATION_TALLAHART, MODE_ROTATION);
         }
     } else if (runner.mode == MODE_SETUP) {
         uprintf("\n");
         uprintf("[scan] setup done -> rotation\n");
         last_setup_time_ms = timer_read32();
-        runner_start(&runner, ROTATION_CARCION, MODE_ROTATION);
+        runner_start(&runner, ROTATION_TALLAHART, MODE_ROTATION);
     } else if (runner.mode == MODE_LOOT) {
         uprintf("\n");
         uprintf("[scan] loot done -> rotation\n");
         last_loot_time_ms = timer_read32();
-        runner_start(&runner, ROTATION_CARCION, MODE_ROTATION);
+        runner_start(&runner, ROTATION_TALLAHART, MODE_ROTATION);
     } else if (runner.mode == MODE_BUFF) {
         uprintf("\n");
         uprintf("[scan] buff done -> rotation\n");
         last_buff_time_ms = timer_read32();
-        runner_start(&runner, ROTATION_CARCION, MODE_ROTATION);
+        runner_start(&runner, ROTATION_TALLAHART, MODE_ROTATION);
     }
 }
