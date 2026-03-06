@@ -68,13 +68,3 @@
 
 // End marker (every script must end with this).
 #define END()                    {CMD_END, 0, 0, 0, NULL}
-
-// ---------------------------------------------------------------------------
-// Compound actions  (expand to multiple commands)
-// ---------------------------------------------------------------------------
-
-// Hold a key for a fixed duration:  press -> wait -> release
-#define HOLD(kc, ms)             PRESS(kc), WAIT(ms), RELEASE(kc)
-
-// Hold a key for a jittered duration:  press -> jittered wait -> release
-#define HOLD_JITTER(kc, ms, pct) PRESS(kc), WAIT_JITTER(ms, pct), RELEASE(kc)

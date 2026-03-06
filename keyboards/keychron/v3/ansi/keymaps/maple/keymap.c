@@ -117,6 +117,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 uprintf("Pausing...\n");
                 running = false;
                 runner_stop(&runner);
+                // Release any basic keycodes the runner may have left held.
+                // Covers letters (KC_A=0x04) through the full navigation cluster
+                // (KC_UP=0x52). Modifier keys (LALT etc.) are always TAP'd so
+                // they can't be stuck; they live in report.mods, not report.keys.
+                for (uint8_t kc = KC_A; kc <= KC_UP; kc++) {
+                    if (is_key_pressed(keyboard_report, kc)) {
+                        uprintf("[F8] releasing stuck key: %d\n", kc);
+                        unregister_code(kc);
+                        wait_ms(jitter(40, 20));
+                    }
+                }
             }
             return false;  // no OS key output
         default:
