@@ -308,7 +308,7 @@ def main():
     if len(sys.argv) > 1:
         files = [Path(f) for f in sys.argv[1:]]
     else:
-        maple = ROOT / "keyboards/keychron/v3/ansi/keymaps/maple"
+        maple = ROOT / "keyboards/keychron/v3/ansi/keymaps/custom"
         files = sorted([*maple.rglob("*.c"), *maple.rglob("*.h")])
 
     total = 0
