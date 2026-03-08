@@ -122,7 +122,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 // (KC_UP=0x52). Modifier keys (LALT etc.) are always TAP'd so
                 // they can't be stuck; they live in report.mods, not report.keys.
                 for (uint8_t kc = KC_A; kc <= KC_UP; kc++) {
-                    if (is_key_pressed(keyboard_report, kc)) {
+                    if (is_key_pressed(kc)) {
                         uprintf("[F8] releasing stuck key: %d\n", kc);
                         unregister_code(kc);
                         wait_ms(jitter(40, 20));

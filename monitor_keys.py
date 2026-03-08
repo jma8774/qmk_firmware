@@ -77,7 +77,8 @@ def on_press(key):
     inter_str = f"+{inter:.1f} ms" if inter is not None else "      —"
     print(f"   PRESS   {name:<20}  {inter_str:>12} since last")
 
-    pressed[name] = now
+    if name not in pressed:  # ignore OS key-repeat events
+        pressed[name] = now
     events.append({"type": "press", "key": name, "time": now, "inter_ms": inter})
 
 
