@@ -20,6 +20,8 @@ macOS note: grant Terminal (or your IDE) Accessibility access in
 System Settings → Privacy & Security → Accessibility.
 """
 
+import argparse
+import statistics
 import time
 from collections import defaultdict
 from pynput import keyboard
@@ -28,7 +30,15 @@ from pynput import keyboard
 # Thresholds
 # ---------------------------------------------------------------------------
 
-MIN_HOLD_MS = 20   # below this a tap is suspiciously fast (firmware minimum is 40 ms)
+MIN_HOLD_MS    = 20    # below this a tap is suspiciously fast (firmware minimum is 40 ms)
+MIN_JITTER_CV  = 0.02  # coefficient of variation (stdev/mean) below this suggests
+                        # jitter is not being applied (< 2 % spread)
+
+# Populated from --repeat-delay CLI arg. OS key-repeat initial delay varies:
+#   macOS default: ~500 ms  (System Settings → Keyboard → Key Repeat Delay)
+#   Windows default: 500 ms (Control Panel → Keyboard → Repeat delay), range 250–1000 ms
+# A re-press arriving before this threshold is flagged as a possible firmware duplicate.
+OS_REPEAT_DELAY_MS: float = 400  # overridden by --repeat-delay
 
 # ---------------------------------------------------------------------------
 # State
@@ -77,7 +87,13 @@ def on_press(key):
     inter_str = f"+{inter:.1f} ms" if inter is not None else "      —"
     print(f"   PRESS   {name:<20}  {inter_str:>12} since last")
 
-    if name not in pressed:  # ignore OS key-repeat events
+    if name in pressed:
+        held_for = now - pressed[name]
+        if held_for < OS_REPEAT_DELAY_MS:
+            print(f"⚠️   PRESS   {name:<20}  already held for {held_for:.1f} ms — possible firmware duplicate press")
+            _flag(f"PRESS {name}: re-pressed after {held_for:.1f} ms (before OS repeat threshold) — possible firmware double-press")
+        # else: OS key-repeat, ignore silently
+    else:
         pressed[name] = now
     events.append({"type": "press", "key": name, "time": now, "inter_ms": inter})
 
@@ -129,10 +145,18 @@ def print_summary():
 
     if holds:
         print("\nPer-key hold durations (ms):")
-        print(f"  {'Key':<20}  {'Count':>5}  {'Min':>8}  {'Avg':>8}  {'Max':>8}")
+        print(f"  {'Key':<20}  {'Count':>5}  {'Min':>8}  {'Avg':>8}  {'Max':>8}  {'CV':>6}")
         for k, vals in sorted(holds.items()):
-            flag = " ❌" if min(vals) < MIN_HOLD_MS else ""
-            print(f"  {k:<20}  {len(vals):>5}  {min(vals):>8.1f}  {sum(vals)/len(vals):>8.1f}  {max(vals):>8.1f}{flag}")
+            avg = sum(vals) / len(vals)
+            cv  = (statistics.stdev(vals) / avg) if len(vals) >= 2 and avg > 0 else None
+            flags = []
+            if min(vals) < MIN_HOLD_MS:
+                flags.append("❌ inhuman hold")
+            if cv is not None and cv < MIN_JITTER_CV:
+                flags.append("⚠️  no jitter")
+            cv_str  = f"{cv:.3f}" if cv is not None else "    —"
+            flag_str = "  " + ", ".join(flags) if flags else ""
+            print(f"  {k:<20}  {len(vals):>5}  {min(vals):>8.1f}  {avg:>8.1f}  {max(vals):>8.1f}  {cv_str:>6}{flag_str}")
 
     # Inter-event stats (informational only, not used for violations)
     inters = [e["inter_ms"] for e in events if e["inter_ms"] is not None]
@@ -153,8 +177,20 @@ def print_summary():
 # ---------------------------------------------------------------------------
 
 def main():
+    global OS_REPEAT_DELAY_MS
+
+    parser = argparse.ArgumentParser(description="QMK firmware key event monitor")
+    parser.add_argument(
+        "--repeat-delay", type=float, default=OS_REPEAT_DELAY_MS, metavar="MS",
+        help="OS key-repeat initial delay in ms (default: %(default)s). "
+             "macOS: System Settings → Keyboard → Key Repeat Delay. "
+             "Windows: Control Panel → Keyboard → Repeat delay."
+    )
+    args = parser.parse_args()
+    OS_REPEAT_DELAY_MS = args.repeat_delay
+
     print("Key monitor started — press F8 to trigger firmware macro, Esc or Ctrl+C to stop.")
-    print(f"Threshold: hold < {MIN_HOLD_MS} ms → inhuman  (firmware minimum tap is 40 ms)\n")
+    print(f"Thresholds: hold < {MIN_HOLD_MS} ms → inhuman  |  re-press < {OS_REPEAT_DELAY_MS:.0f} ms → duplicate press\n")
     print(f"  {'Event':<30}  {'Since last':>12}  {'Hold':>10}")
     print("-" * 62)
 

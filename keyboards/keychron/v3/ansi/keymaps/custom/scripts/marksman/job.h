@@ -15,7 +15,10 @@
 #define ROPE_DELAY(ms)           TAP(KC_C), WAIT_JITTER_D(ms)
 #define DASH()                   TAP(KC_LALT), WAIT_JITTER_UP(600, 5)
 #define JUMP()                   TAP(KC_E), WAIT_JITTER_UP_D(70)
-#define TELEPORT_RESET()         TAP(KC_X), WAIT_JITTER_D(60), TAP(KC_X), WAIT_JITTER_D(60), TAP(KC_X), WAIT_JITTER_UP_D(650)
+#define JUMP_DELAY(ms)           TAP(KC_E), WAIT_JITTER_D(ms)
+#define JUMP_GROUND()            TAP(KC_E), WAIT_JITTER_UP_D(680)
+#define TELEPORT_RESET()         TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_UP_D(650)
+#define TELEPORT_RESET_2X()      TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_UP_D(650)
 
 #define FLASH_JUMP()             TAP(KC_E), WAIT_JITTER_UP_D(100), TAP(KC_E), WAIT_JITTER_UP(580, 5)
 

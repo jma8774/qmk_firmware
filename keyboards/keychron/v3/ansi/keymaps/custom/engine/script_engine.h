@@ -49,7 +49,8 @@ typedef enum {
     MODE_ROTATION,
     MODE_SETUP,
     MODE_LOOT,
-    MODE_BUFF
+    MODE_BUFF,
+    MODE_HUMAN
 } runner_mode_t;
 
 // ---------------------------------------------------------------------------

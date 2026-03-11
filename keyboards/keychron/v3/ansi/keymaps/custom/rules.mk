@@ -7,3 +7,4 @@ SRC += scripts/marksman/rotation_script.c
 SRC += scripts/marksman/setup_script.c
 SRC += scripts/marksman/buff_script.c
 SRC += scripts/marksman/loot_script.c
+SRC += scripts/marksman/random_human_script.c

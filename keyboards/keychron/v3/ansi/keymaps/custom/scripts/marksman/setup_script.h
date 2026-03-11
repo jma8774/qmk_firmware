@@ -1,8 +1,10 @@
-// Setup script – runs after a rotation completes when 2 minutes have elapsed.
+// Setup script – runs after a rotation completes when the setup interval elapses.
 
 #pragma once
 
 #include "../../engine/script_engine.h"
 
-extern const cmd_t SETUP_CARCION[];
-extern const cmd_t SETUP_TALLAHART[];
+// Dynamic builders — pick a random variant each call
+const cmd_t* make_setup_tallahart_up(void);
+const cmd_t* make_setup_tallahart_reset(void);
+const cmd_t* make_setup_tallahart(void);
