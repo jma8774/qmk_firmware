@@ -10,11 +10,11 @@
 // ---------------------------------------------------------------------------
 
 #define SHOOT()                  TAP(KC_Q), WAIT_JITTER_UP_D(600)
-#define HOLD_SHOOT(ms)           PRESS(KC_Q), WAIT_JITTER(ms, 5), RELEASE(KC_Q), WAIT_JITTER_UP_D(50)
+#define HOLD_SHOOT(ms)           PRESS(KC_Q), WAIT_JITTER(ms, 5), RELEASE(KC_Q), WAIT_JITTER_UP_20(50)
 #define ROPE()                   TAP(KC_C), WAIT_JITTER_UP_D(1600)
 #define ROPE_DELAY(ms)           TAP(KC_C), WAIT_JITTER_D(ms)
 #define DASH()                   TAP(KC_LALT), WAIT_JITTER_UP(600, 5)
-#define JUMP()                   TAP(KC_E), WAIT_JITTER_UP_D(70)
+#define JUMP()                   TAP(KC_E), WAIT_JITTER_UP_20(70)
 #define JUMP_DELAY(ms)           TAP(KC_E), WAIT_JITTER_D(ms)
 #define JUMP_GROUND()            TAP(KC_E), WAIT_JITTER_UP_D(680)
 #define TELEPORT_RESET()         TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_UP_D(650)
@@ -86,8 +86,8 @@ bool boss_buffs(void);
 // TRY_* macros  –  call + cast delay (only if fired)
 // ---------------------------------------------------------------------------
 
-#define TRY_BOLT_BURST()      CALL_NAMED("bolt_burst", bolt_burst),    SKIP_FALSE(1), WAIT_JITTER_UP(430)
-#define TRY_SURGEBOLT()       CALL_NAMED("surgebolt", surgebolt),     SKIP_FALSE(1), WAIT_JITTER_UP_D(70)
+#define TRY_BOLT_BURST()      CALL_NAMED("bolt_burst", bolt_burst),    SKIP_FALSE(1), WAIT_JITTER_UP_D(430)
+#define TRY_SURGEBOLT()       CALL_NAMED("surgebolt", surgebolt),     SKIP_FALSE(1), WAIT_JITTER_UP_20(70)
 #define TRY_WEB()             CALL_NAMED("web", web),           SKIP_FALSE(1), WAIT_JITTER_UP_D(300)
 #define TRY_SOLAR_CREST()     CALL_NAMED("solar_crest", solar_crest),   SKIP_FALSE(1), WAIT_JITTER_UP_D(400)
 #define TRY_ERDA_FOUNTAIN()   CALL_NAMED("erda_fountain", erda_fountain), SKIP_FALSE(1), WAIT_JITTER_UP_D(700)

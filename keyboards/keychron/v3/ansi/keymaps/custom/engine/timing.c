@@ -77,6 +77,30 @@ uint32_t jitter_up(uint32_t base_ms, uint8_t pct) {
 }
 
 // ---------------------------------------------------------------------------
+// jitter_abs / jitter_abs_down / jitter_abs_up
+// ---------------------------------------------------------------------------
+// Absolute-ms variants: b is a fixed ms offset, not a percentage.
+
+uint32_t jitter_abs(uint32_t base_ms, uint32_t abs_ms) {
+    if (abs_ms == 0) return base_ms;
+    uint32_t range = abs_ms * 2 + 1;
+    uint32_t offset = (uint32_t)rand() % range;
+    return (base_ms > abs_ms ? base_ms - abs_ms : 0) + offset;
+}
+
+uint32_t jitter_abs_down(uint32_t base_ms, uint32_t abs_ms) {
+    if (abs_ms == 0) return base_ms;
+    uint32_t offset = (uint32_t)rand() % (abs_ms + 1);
+    return base_ms > offset ? base_ms - offset : 0;
+}
+
+uint32_t jitter_abs_up(uint32_t base_ms, uint32_t abs_ms) {
+    if (abs_ms == 0) return base_ms;
+    uint32_t offset = (uint32_t)rand() % (abs_ms + 1);
+    return base_ms + offset;
+}
+
+// ---------------------------------------------------------------------------
 // timing_chance
 // ---------------------------------------------------------------------------
 // Returns true with probability pct/100.  pct 0 => always false, pct 100 => always true.

@@ -18,7 +18,7 @@
 static cmd_t _setup_up_buf[30];
 const cmd_t* make_setup_tallahart_up(void) {
     static const cmd_t c_tap_up[]  = { TAP(KC_UP) }; // noqa — building block, WAIT added by caller loop
-    static const cmd_t c_wait_up[] = { WAIT_JITTER_UP_D(70) };
+    static const cmd_t c_wait_up[] = { WAIT_JITTER_UP_20(70) };
     static const cmd_t c_try[3][3] = {
         { TRY_JANUS() },
         { TRY_JANUS2() },
@@ -58,7 +58,7 @@ const cmd_t* make_setup_tallahart_up(void) {
 static cmd_t _setup_reset_buf[30];
 const cmd_t* make_setup_tallahart_reset(void) {
     static const cmd_t c_tap_up[]  = { TAP(KC_UP) }; // noqa — building block, WAIT added by caller loop
-    static const cmd_t c_wait_up[] = { WAIT_JITTER_UP_D(70) };
+    static const cmd_t c_wait_up[] = { WAIT_JITTER_UP_20(70) };
     static const cmd_t c_try[3][3] = {
         { TRY_JANUS() },
         { TRY_JANUS2() },

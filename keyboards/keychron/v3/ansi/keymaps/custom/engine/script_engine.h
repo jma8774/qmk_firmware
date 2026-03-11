@@ -14,10 +14,13 @@ typedef enum {
     CMD_PRESS,        // register_code(kc)
     CMD_RELEASE,      // unregister_code(kc)
     CMD_TAP,          // tap_code_delay(kc, a ? a : 10)
-    CMD_WAIT_MS,           // delay for `a` ms
-    CMD_WAIT_JITTER,       // delay for jitter(a, b) ms  (+/- pct%)
-    CMD_WAIT_JITTER_DOWN,  // delay for jitter_down(a, b) ms  (only down, never over a)
-    CMD_WAIT_JITTER_UP,    // delay for jitter_up(a, b) ms    (only up, never under a)
+    CMD_WAIT_MS,               // delay for `a` ms
+    CMD_WAIT_JITTER,           // delay for jitter(a, b) ms        (+/- b%)
+    CMD_WAIT_JITTER_DOWN,      // delay for jitter_down(a, b) ms   (only down, never over a)
+    CMD_WAIT_JITTER_UP,        // delay for jitter_up(a, b) ms     (only up, never under a)
+    CMD_WAIT_JITTER_ABS,       // delay for jitter_abs(a, b) ms    (+/- b ms absolute)
+    CMD_WAIT_JITTER_ABS_DOWN,  // delay for jitter_abs_down(a, b)  ([a-b, a])
+    CMD_WAIT_JITTER_ABS_UP,    // delay for jitter_abs_up(a, b)    ([a, a+b])
     CMD_CALL,              // call fn(); stores return value in last_result
     CMD_CHANCE,       // last_result = (rand() % 100) < a;  a = 0..100
     CMD_SKIP_TRUE,      // if last_result == true,  skip `a` commands forward

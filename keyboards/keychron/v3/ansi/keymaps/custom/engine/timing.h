@@ -17,6 +17,14 @@ uint32_t jitter_down(uint32_t base_ms, uint8_t pct);
 // Result is in [base_ms, base_ms + base_ms*pct/100]. Example: jitter_up(1000, 20) -> [1000, 1200].
 uint32_t jitter_up(uint32_t base_ms, uint8_t pct);
 
+// Absolute-ms jitter variants (b is ms, not percent).
+// jitter_abs(500, 20)      -> [480, 520]
+// jitter_abs_down(500, 20) -> [480, 500]
+// jitter_abs_up(500, 20)   -> [500, 520]
+uint32_t jitter_abs(uint32_t base_ms, uint32_t abs_ms);
+uint32_t jitter_abs_down(uint32_t base_ms, uint32_t abs_ms);
+uint32_t jitter_abs_up(uint32_t base_ms, uint32_t abs_ms);
+
 // Seed the C stdlib rand() from timer_read32().
 // Call once (e.g. in keyboard_post_init_user).
 void timing_seed_rng(void);

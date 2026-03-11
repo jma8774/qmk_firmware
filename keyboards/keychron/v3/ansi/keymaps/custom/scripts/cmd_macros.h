@@ -21,10 +21,10 @@
 
 // Average human gamer tap duration ~65 ms (press-to-release).
 #define DEFAULT_TAP_MS           60
-#define DEFAULT_TAP_JITTER_PCT   15
+#define DEFAULT_TAP_JITTER_PCT   20
 
 // Default jitter percentage for WAIT_JITTER when pct is omitted.
-#define DEFAULT_WAIT_JITTER_PCT       10
+#define DEFAULT_WAIT_JITTER_PCT       15
 
 // ---------------------------------------------------------------------------
 // Primitive actions  (1 command each)
@@ -52,6 +52,16 @@
 // Jittered delay upward only: result in [min_ms, min_ms*(1+pct/100)], never under min_ms.
 #define WAIT_JITTER_UP(ms, pct)     {CMD_WAIT_JITTER_UP, 0, (ms), (pct), NULL}
 #define WAIT_JITTER_UP_D(ms)        {CMD_WAIT_JITTER_UP, 0, (ms), DEFAULT_WAIT_JITTER_PCT, NULL}
+
+// Absolute-ms jitter (b is a fixed ms offset, not a percentage).
+#define WAIT_JITTER_ABS(ms, abs)      {CMD_WAIT_JITTER_ABS, 0, (ms), (abs), NULL}
+#define WAIT_JITTER_ABS_DOWN(ms, abs) {CMD_WAIT_JITTER_ABS_DOWN, 0, (ms), (abs), NULL}
+#define WAIT_JITTER_ABS_UP(ms, abs)   {CMD_WAIT_JITTER_ABS_UP, 0, (ms), (abs), NULL}
+
+// Convenience shorthands: fixed ±20 ms absolute jitter.
+#define WAIT_JITTER_20(ms)            {CMD_WAIT_JITTER_ABS, 0, (ms), 20, NULL}
+#define WAIT_JITTER_DOWN_20(ms)       {CMD_WAIT_JITTER_ABS_DOWN, 0, (ms), 20, NULL}
+#define WAIT_JITTER_UP_20(ms)         {CMD_WAIT_JITTER_ABS_UP, 0, (ms), 20, NULL}
 
 // Call a function (must return bool).  Result stored in runner.last_result.
 // Use CALL(name, fn) to log the function name; use CALL(fn) for name = NULL.

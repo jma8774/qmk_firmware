@@ -104,6 +104,33 @@ void runner_task(runner_t *r) {
                 r->ip++;
                 return;  // yield
 
+            case CMD_WAIT_JITTER_ABS:
+                {
+                    uint32_t delay = jitter_abs(c->a, c->b);
+                    uprintf("[runner_task] CMD_WAIT_JITTER_ABS: delay=%lu (base=%lu ms, abs=%lu ms)\n", delay, c->a, c->b);
+                    r->wake_time = timer_read32() + delay;
+                }
+                r->ip++;
+                return;
+
+            case CMD_WAIT_JITTER_ABS_DOWN:
+                {
+                    uint32_t delay = jitter_abs_down(c->a, c->b);
+                    uprintf("[runner_task] CMD_WAIT_JITTER_ABS_DOWN: delay=%lu (max=%lu ms, abs=%lu ms)\n", delay, c->a, c->b);
+                    r->wake_time = timer_read32() + delay;
+                }
+                r->ip++;
+                return;
+
+            case CMD_WAIT_JITTER_ABS_UP:
+                {
+                    uint32_t delay = jitter_abs_up(c->a, c->b);
+                    uprintf("[runner_task] CMD_WAIT_JITTER_ABS_UP: delay=%lu (min=%lu ms, abs=%lu ms)\n", delay, c->a, c->b);
+                    r->wake_time = timer_read32() + delay;
+                }
+                r->ip++;
+                return;
+
             case CMD_CALL:
                 r->last_result = c->fn ? c->fn() : false;
                 uprintf("[runner_task] CMD_CALL %s: success=%d\n", c->fn_name ? c->fn_name : "?", r->last_result);
