@@ -95,7 +95,7 @@ static bool      end_wait_active     = false;
 //  Script     Interval                    Jitter call                  Effective range
 //  ---------  --------------------------  ---------------------------  ----------------------
 //  Setup      SETUP_INTERVAL_MS = 120 s   random_range(120000,83,100)  100  – 120 s
-//  Loot       LOOT_INTERVAL_MS  = 100 s   random_range(100000,80,100)  80   – 100 s
+//  Loot       LOOT_INTERVAL_MS  = 80 s    random_range(80000, 75,100)  60   – 80 s
 //  Buff       BUFF_INTERVAL_MS  = 15 s    random_range(15000, 70,100)  10.5 – 15 s
 //  Human      HUMAN_INTERVAL_MS = 600 s   random_range(600000,15,100)  90   – 600 s
 //  Rotation   (cooldown only)             random_range(8500,  71,100)  6    – 8.5 s
@@ -103,7 +103,7 @@ static bool      end_wait_active     = false;
 // ---------------------------------------------------------------------------
 
 #define SETUP_INTERVAL_MS  120000  // 120 seconds
-#define LOOT_INTERVAL_MS   100000  // 100 seconds
+#define LOOT_INTERVAL_MS    80000  // 80 seconds
 #define BUFF_INTERVAL_MS    15000  // 15 seconds
 #define HUMAN_INTERVAL_MS  600000  // up to 10 minutes (random_range pulls down to 90 s)
 
@@ -196,7 +196,7 @@ void matrix_scan_user(void) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> setup (interval elapsed)\n");
             runner_start(&runner, make_setup_tallahart(), MODE_SETUP);
-        } else if (timer_elapsed32(last_loot_time_ms) >= random_range(LOOT_INTERVAL_MS, 80, 100)) {
+        } else if (timer_elapsed32(last_loot_time_ms) >= random_range(LOOT_INTERVAL_MS, 75, 100)) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> loot (interval elapsed)\n");
             runner_start(&runner, make_loot_full(), MODE_LOOT);

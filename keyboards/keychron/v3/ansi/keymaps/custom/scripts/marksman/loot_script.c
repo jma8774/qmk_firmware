@@ -20,7 +20,7 @@ static cmd_t _loot_full_buf[20];
 const cmd_t* make_loot_full(void) {
     static const cmd_t c_tap_up[]    = { TAP(KC_UP) };         // noqa — building block, WAIT added by caller loop
     static const cmd_t c_wait_up[]   = { WAIT_JITTER_UP_20(70) };
-    static const cmd_t c_wait_loot[] = { WAIT_JITTER_UP_D(2000) };
+    static const cmd_t c_wait_loot[] = { WAIT_JITTER_ABS_UP(3000, 2000) };
     static const cmd_t c_reset[]     = { TELEPORT_RESET_2X() };
     static const cmd_t c_end[]       = { END() };
 
