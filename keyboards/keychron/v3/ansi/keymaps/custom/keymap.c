@@ -86,9 +86,24 @@ static uint32_t  last_buff_time_ms   = 0;
 static uint32_t  last_human_time_ms  = 0;
 static uint32_t  rotation_cooldown_until_ms = 0;
 static bool      rotation_cooldown_active   = false;
+static uint32_t  end_wait_until_ms   = 0;
+static bool      end_wait_active     = false;
 
-#define SETUP_INTERVAL_MS  120000  // 2 minutes
-#define LOOT_INTERVAL_MS    60000  // 1 minute
+// ---------------------------------------------------------------------------
+// Script intervals and timing summary
+//
+//  Script     Interval                    Jitter call                  Effective range
+//  ---------  --------------------------  ---------------------------  ----------------------
+//  Setup      SETUP_INTERVAL_MS = 120 s   random_range(120000,83,100)  100  – 120 s
+//  Loot       LOOT_INTERVAL_MS  = 100 s   random_range(100000,80,100)  80   – 100 s
+//  Buff       BUFF_INTERVAL_MS  = 15 s    random_range(15000, 70,100)  10.5 – 15 s
+//  Human      HUMAN_INTERVAL_MS = 600 s   random_range(600000,15,100)  90   – 600 s
+//  Rotation   (cooldown only)             random_range(8500,  71,100)  6    – 8.5 s
+//  End pause  (after every script)        jitter(70, 20)               56   – 84 ms
+// ---------------------------------------------------------------------------
+
+#define SETUP_INTERVAL_MS  120000  // 120 seconds
+#define LOOT_INTERVAL_MS   100000  // 100 seconds
 #define BUFF_INTERVAL_MS    15000  // 15 seconds
 #define HUMAN_INTERVAL_MS  600000  // up to 10 minutes (random_range pulls down to 90 s)
 
@@ -143,10 +158,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // ---------------------------------------------------------------------------
 // matrix_scan_user  –  policy layer (called every ~1 ms)
 // ---------------------------------------------------------------------------
-// static uint32_t gate1_time_ms = 53000;
-// static uint32_t carcion_time_ms = 46000;
-static uint32_t tallahart_time_ms = 46000;
-// static uint32_t odium_time_ms = 48000;
 void matrix_scan_user(void) {
     if (!running) {
         return;
@@ -157,8 +168,19 @@ void matrix_scan_user(void) {
 
     // If still executing, nothing to decide yet
     if (runner.active) {
+        end_wait_active = false;  // reset so the pause fires fresh next time
         return;
     }
+
+    // Small pause between every script (~70 ms ±20%)
+    if (!end_wait_active) {
+        end_wait_until_ms = timer_read32() + jitter(70, 20);
+        end_wait_active   = true;
+    }
+    if (!timer_expired32(timer_read32(), end_wait_until_ms)) {
+        return;
+    }
+    end_wait_active = false;
 
     // Script just finished — decide what comes next
     if (runner.mode == MODE_ROTATION) {
@@ -170,7 +192,7 @@ void matrix_scan_user(void) {
             uprintf("\n[scan] rotation done -> cooldown %lu ms\n", cd);
         }
         // High-priority scripts interrupt cooldown immediately
-        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= random_range(tallahart_time_ms, 70, 100)) {
+        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= random_range(SETUP_INTERVAL_MS, 83, 100)) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> setup (interval elapsed)\n");
             runner_start(&runner, make_setup_tallahart(), MODE_SETUP);
