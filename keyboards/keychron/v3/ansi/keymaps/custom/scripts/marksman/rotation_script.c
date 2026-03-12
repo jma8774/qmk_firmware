@@ -149,7 +149,3 @@ const cmd_t* make_rotation_tallahart(void) {
     return table[0].script;
 }
 
-const cmd_t ROTATION_COOLDOWN[] = {
-    WAIT_JITTER_UP(3000, 100), // 3–6 s
-    END(),
-};

@@ -15,10 +15,11 @@
 // call and can be handed directly to runner_start().
 // ---------------------------------------------------------------------------
 
-static cmd_t _setup_up_buf[30];
+static cmd_t _setup_up_buf[35];
 const cmd_t* make_setup_tallahart_up(void) {
-    static const cmd_t c_tap_up[]  = { TAP(KC_UP) }; // noqa — building block, WAIT added by caller loop
-    static const cmd_t c_wait_up[] = { WAIT_JITTER_UP_20(70) };
+    static const cmd_t c_tap_up[]      = { TAP(KC_UP) }; // noqa — building block, WAIT added by caller loop
+    static const cmd_t c_wait_up[]     = { WAIT_JITTER_UP_20(70) };
+    static const cmd_t c_wait_janus[]  = { WAIT_JITTER(500, 15) };
     static const cmd_t c_try[3][3] = {
         { TRY_JANUS() },
         { TRY_JANUS2() },
@@ -38,6 +39,7 @@ const cmd_t* make_setup_tallahart_up(void) {
             _setup_up_buf[n++] = c_wait_up[0];
         }
         if (i < 3) {
+            _setup_up_buf[n++] = c_wait_janus[0];
             for (uint8_t j = 0; j < try_len; j++) {
                 _setup_up_buf[n++] = c_try[i][j];
             }
@@ -55,10 +57,11 @@ const cmd_t* make_setup_tallahart_up(void) {
 // between TELEPORT_RESET (2x X) and TELEPORT_RESET_2X (3x X) at the end.
 // ---------------------------------------------------------------------------
 
-static cmd_t _setup_reset_buf[30];
+static cmd_t _setup_reset_buf[40];
 const cmd_t* make_setup_tallahart_reset(void) {
-    static const cmd_t c_tap_up[]  = { TAP(KC_UP) }; // noqa — building block, WAIT added by caller loop
-    static const cmd_t c_wait_up[] = { WAIT_JITTER_UP_20(70) };
+    static const cmd_t c_tap_up[]      = { TAP(KC_UP) }; // noqa — building block, WAIT added by caller loop
+    static const cmd_t c_wait_up[]     = { WAIT_JITTER_UP_20(70) };
+    static const cmd_t c_wait_janus[]  = { WAIT_JITTER(500, 15) };
     static const cmd_t c_try[3][3] = {
         { TRY_JANUS() },
         { TRY_JANUS2() },
@@ -81,6 +84,7 @@ const cmd_t* make_setup_tallahart_reset(void) {
             _setup_reset_buf[n++] = c_tap_up[0];
             _setup_reset_buf[n++] = c_wait_up[0];
         }
+        _setup_reset_buf[n++] = c_wait_janus[0];
         for (uint8_t j = 0; j < try_len; j++) {
             _setup_reset_buf[n++] = c_try[i][j];
         }

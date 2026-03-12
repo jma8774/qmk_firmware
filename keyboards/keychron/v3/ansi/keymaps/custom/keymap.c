@@ -84,6 +84,8 @@ static uint32_t  last_setup_time_ms  = 0;
 static uint32_t  last_loot_time_ms   = 0;
 static uint32_t  last_buff_time_ms   = 0;
 static uint32_t  last_human_time_ms  = 0;
+static uint32_t  rotation_cooldown_until_ms = 0;
+static bool      rotation_cooldown_active   = false;
 
 #define SETUP_INTERVAL_MS  120000  // 2 minutes
 #define LOOT_INTERVAL_MS    60000  // 1 minute
@@ -160,31 +162,36 @@ void matrix_scan_user(void) {
 
     // Script just finished — decide what comes next
     if (runner.mode == MODE_ROTATION) {
-        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= random_range(tallahart_time_ms, 70, 100))  {
-            uprintf("\n");
+        // Start cooldown timer once when rotation ends
+        if (!rotation_cooldown_active) {
+            uint32_t cd = random_range(3000, 50, 100);  // 3–6 s
+            rotation_cooldown_until_ms = timer_read32() + cd;
+            rotation_cooldown_active   = true;
+            uprintf("\n[scan] rotation done -> cooldown %lu ms\n", cd);
+        }
+        // High-priority scripts interrupt cooldown immediately
+        if (last_setup_time_ms == 0 || timer_elapsed32(last_setup_time_ms) >= random_range(tallahart_time_ms, 70, 100)) {
+            rotation_cooldown_active = false;
             uprintf("[scan] rotation -> setup (interval elapsed)\n");
             runner_start(&runner, make_setup_tallahart(), MODE_SETUP);
         } else if (timer_elapsed32(last_loot_time_ms) >= random_range(LOOT_INTERVAL_MS, 80, 100)) {
-            uprintf("\n");
+            rotation_cooldown_active = false;
             uprintf("[scan] rotation -> loot (interval elapsed)\n");
-            runner_start(&runner, LOOT_EMPTY, MODE_LOOT);
+            runner_start(&runner, LOOT_FULL, MODE_LOOT);
         } else if (timer_elapsed32(last_buff_time_ms) >= random_range(BUFF_INTERVAL_MS, 70, 100)) {
-            uprintf("\n");
+            rotation_cooldown_active = false;
             uprintf("[scan] rotation -> buff (interval elapsed)\n");
             runner_start(&runner, BUFF_SCRIPT, MODE_BUFF);
         } else if (timer_elapsed32(last_human_time_ms) >= random_range(HUMAN_INTERVAL_MS, 15, 100)) {
-            uprintf("\n");
+            rotation_cooldown_active = false;
             uprintf("[scan] rotation -> human (interval elapsed)\n");
             runner_start(&runner, make_random_human(), MODE_HUMAN);
-        } else {
-            uprintf("\n");
-            uprintf("[scan] rotation -> cooldown\n");
-            runner_start(&runner, ROTATION_COOLDOWN, MODE_ROTATION_COOLDOWN);
+        } else if (timer_expired32(timer_read32(), rotation_cooldown_until_ms)) {
+            rotation_cooldown_active = false;
+            uprintf("[scan] cooldown done -> rotation\n");
+            runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
         }
-    } else if (runner.mode == MODE_ROTATION_COOLDOWN) {
-        uprintf("\n");
-        uprintf("[scan] cooldown done -> rotation\n");
-        runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
+        // else: still in cooldown, do nothing this tick
     } else if (runner.mode == MODE_SETUP) {
         uprintf("\n");
         uprintf("[scan] setup done -> rotation\n");

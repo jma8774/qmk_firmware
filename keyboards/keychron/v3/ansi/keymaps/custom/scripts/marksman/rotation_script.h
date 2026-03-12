@@ -22,5 +22,4 @@ extern const cmd_t ROTATION_TALLAHART_JUMP_ATTACK_2[];
 extern const cmd_t ROTATION_TALLAHART_DASH[];
 extern const cmd_t ROTATION_TALLAHART_DASH_1[];
 
-extern const cmd_t ROTATION_COOLDOWN[];
 const cmd_t* make_rotation_tallahart(void);
