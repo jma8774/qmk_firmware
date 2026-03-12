@@ -12,8 +12,6 @@ const cmd_t LOOT_FULL[] = {
     WAIT_JITTER_UP_D(2000),
     TAP(KC_UP),
     WAIT_JITTER_UP_D(2000),
-    TAP(KC_UP),
-    WAIT_JITTER_UP_D(2000),
     TELEPORT_RESET_2X(),
     END(),
 };

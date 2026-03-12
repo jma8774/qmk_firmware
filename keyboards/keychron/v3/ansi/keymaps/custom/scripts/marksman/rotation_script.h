@@ -10,7 +10,6 @@ extern const cmd_t ROTATION_TALLAHART_SHOOT[];
 extern const cmd_t ROTATION_TALLAHART_SHOOT_1[];
 extern const cmd_t ROTATION_TALLAHART_SHOOT_2[];
 extern const cmd_t ROTATION_TALLAHART_SHOOT_3[];
-extern const cmd_t ROTATION_TALLAHART_SHOOT_4[];
 extern const cmd_t ROTATION_TALLAHART_SHOOT_5[];
 extern const cmd_t ROTATION_TALLAHART_BOLT_BURST[];
 extern const cmd_t ROTATION_TALLAHART_BOLT_BURST_1[];

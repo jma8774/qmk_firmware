@@ -164,7 +164,7 @@ void matrix_scan_user(void) {
     if (runner.mode == MODE_ROTATION) {
         // Start cooldown timer once when rotation ends
         if (!rotation_cooldown_active) {
-            uint32_t cd = random_range(3000, 50, 100);  // 3–6 s
+            uint32_t cd = random_range(8500, 71, 100);  // 6–8.5 s
             rotation_cooldown_until_ms = timer_read32() + cd;
             rotation_cooldown_active   = true;
             uprintf("\n[scan] rotation done -> cooldown %lu ms\n", cd);

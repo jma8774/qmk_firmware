@@ -36,14 +36,6 @@ const cmd_t ROTATION_TALLAHART_SHOOT_3[] = {
     END(),
 };
 
-const cmd_t ROTATION_TALLAHART_SHOOT_4[] = {
-    JUMP_GROUND(),
-    JUMP_GROUND(),
-    JUMP_GROUND(),
-    SHOOT(),
-    END(),
-};
-
 const cmd_t ROTATION_TALLAHART_SHOOT_5[] = {
     JUMP_GROUND(),
     JUMP_DELAY(100),
@@ -98,12 +90,14 @@ const cmd_t ROTATION_TALLAHART_JUMP_ATTACK_2[] = {
 const cmd_t ROTATION_TALLAHART_DASH[] = {
     DASH(),
     SHOOT(),
+    TELEPORT_RESET_2X(),
     END(),
 };
 
 const cmd_t ROTATION_TALLAHART_DASH_1[] = {
     DASH(),
     TRY_BOLT_BURST(),
+    TELEPORT_RESET_2X(),
     END(),
 };
 
@@ -117,23 +111,23 @@ typedef struct {
 } weighted_rotation_t;
 
 const cmd_t* make_rotation_tallahart(void) {
+    // Total = 65: SHOOT=39 (60%), BOLT_BURST=13 (20%), 13 rest×1 (20%)
     static const weighted_rotation_t table[] = {
-        { ROTATION_TALLAHART_SURGEBOLT,    1 },
-        { ROTATION_TALLAHART_SHOOT,       38 },
-        { ROTATION_TALLAHART_SHOOT_1,      2 },
-        { ROTATION_TALLAHART_SHOOT_2,      2 },
-        { ROTATION_TALLAHART_SHOOT_3,      2 },
-        { ROTATION_TALLAHART_SHOOT_4,      1 },
-        { ROTATION_TALLAHART_SHOOT_5,      1 },
-        { ROTATION_TALLAHART_BOLT_BURST,  15 },
-        { ROTATION_TALLAHART_BOLT_BURST_1, 2 },
-        { ROTATION_TALLAHART_BOLT_BURST_2, 2 },
-        { ROTATION_TALLAHART_BOLT_BURST_3, 1 },
-        { ROTATION_TALLAHART_JUMP_ATTACK,  3 },
-        { ROTATION_TALLAHART_JUMP_ATTACK_1,1 },
-        { ROTATION_TALLAHART_JUMP_ATTACK_2,1 },
-        { ROTATION_TALLAHART_DASH,         2 },
-        { ROTATION_TALLAHART_DASH_1,       1 },
+        { ROTATION_TALLAHART_SHOOT,        39 },
+        { ROTATION_TALLAHART_BOLT_BURST,   13 },
+        { ROTATION_TALLAHART_SURGEBOLT,     1 },
+        { ROTATION_TALLAHART_SHOOT_1,       1 },
+        { ROTATION_TALLAHART_SHOOT_2,       1 },
+        { ROTATION_TALLAHART_SHOOT_3,       1 },
+        { ROTATION_TALLAHART_SHOOT_5,       1 },
+        { ROTATION_TALLAHART_BOLT_BURST_1,  1 },
+        { ROTATION_TALLAHART_BOLT_BURST_2,  1 },
+        { ROTATION_TALLAHART_BOLT_BURST_3,  1 },
+        { ROTATION_TALLAHART_JUMP_ATTACK,   1 },
+        { ROTATION_TALLAHART_JUMP_ATTACK_1, 1 },
+        { ROTATION_TALLAHART_JUMP_ATTACK_2, 1 },
+        { ROTATION_TALLAHART_DASH,          1 },
+        { ROTATION_TALLAHART_DASH_1,        1 },
     };
     static const uint8_t count = sizeof(table) / sizeof(table[0]);
 
