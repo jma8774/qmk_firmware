@@ -119,13 +119,13 @@ typedef struct {
 const cmd_t* make_rotation_tallahart(void) {
     static const weighted_rotation_t table[] = {
         { ROTATION_TALLAHART_SURGEBOLT,    1 },
-        { ROTATION_TALLAHART_SHOOT,        8 },
+        { ROTATION_TALLAHART_SHOOT,       38 },
         { ROTATION_TALLAHART_SHOOT_1,      2 },
         { ROTATION_TALLAHART_SHOOT_2,      2 },
         { ROTATION_TALLAHART_SHOOT_3,      2 },
         { ROTATION_TALLAHART_SHOOT_4,      1 },
         { ROTATION_TALLAHART_SHOOT_5,      1 },
-        { ROTATION_TALLAHART_BOLT_BURST,   3 },
+        { ROTATION_TALLAHART_BOLT_BURST,  15 },
         { ROTATION_TALLAHART_BOLT_BURST_1, 2 },
         { ROTATION_TALLAHART_BOLT_BURST_2, 2 },
         { ROTATION_TALLAHART_BOLT_BURST_3, 1 },
@@ -148,3 +148,8 @@ const cmd_t* make_rotation_tallahart(void) {
     }
     return table[0].script;
 }
+
+const cmd_t ROTATION_COOLDOWN[] = {
+    WAIT_JITTER_UP(3000, 100), // 3–6 s
+    END(),
+};

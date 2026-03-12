@@ -178,9 +178,13 @@ void matrix_scan_user(void) {
             runner_start(&runner, make_random_human(), MODE_HUMAN);
         } else {
             uprintf("\n");
-            uprintf("[scan] rotation -> rotation (continue)\n");
-            runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
+            uprintf("[scan] rotation -> cooldown\n");
+            runner_start(&runner, ROTATION_COOLDOWN, MODE_ROTATION_COOLDOWN);
         }
+    } else if (runner.mode == MODE_ROTATION_COOLDOWN) {
+        uprintf("\n");
+        uprintf("[scan] cooldown done -> rotation\n");
+        runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
     } else if (runner.mode == MODE_SETUP) {
         uprintf("\n");
         uprintf("[scan] setup done -> rotation\n");

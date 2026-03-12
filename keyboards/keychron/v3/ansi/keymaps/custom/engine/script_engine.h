@@ -50,6 +50,7 @@ typedef struct {
 typedef enum {
     MODE_NONE,
     MODE_ROTATION,
+    MODE_ROTATION_COOLDOWN,
     MODE_SETUP,
     MODE_LOOT,
     MODE_BUFF,
