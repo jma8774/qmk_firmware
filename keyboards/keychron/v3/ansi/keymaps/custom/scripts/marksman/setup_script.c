@@ -8,18 +8,17 @@
 // ---------------------------------------------------------------------------
 // Random UP variant builder
 //
-// Generates one of 2^4 = 16 variants at runtime.  Each of the 4 UP taps
-// in the base SETUP_TALLAHART_UP pattern can randomly get an extra UP added
-// after it (bit 0 = before JANUS, bit 1 = before JANUS2, bit 2 = before
-// JANUS3, bit 3 = the final UP).  The buffer is static so it outlives the
-// call and can be handed directly to runner_start().
+// Pattern: TRY_JANUS → UP[+opt UP] → TRY_JANUS2 → UP[+opt UP] →
+//          TRY_JANUS3 → UP[+opt UP]   (3 sets total, 2^3 = 8 variants)
+// Each UP tap has a 50% chance of gaining an extra UP after it.
+// The buffer is static so it outlives the call.
 // ---------------------------------------------------------------------------
 
 static cmd_t _setup_up_buf[35];
 const cmd_t* make_setup_tallahart_up(void) {
-    static const cmd_t c_tap_up[]      = { TAP(KC_UP) }; // noqa — building block, WAIT added by caller loop
-    static const cmd_t c_wait_up[]     = { WAIT_JITTER_UP_20(70) };
-    static const cmd_t c_wait_janus[]  = { WAIT_JITTER(500, 15) };
+    static const cmd_t c_tap_up[]     = { TAP(KC_UP) }; // noqa — building block, WAIT added by caller loop
+    static const cmd_t c_wait_up[]    = { WAIT_JITTER_UP_20(70) };
+    static const cmd_t c_wait_janus[] = { WAIT_JITTER(500, 15) };
     static const cmd_t c_try[3][3] = {
         { TRY_JANUS() },
         { TRY_JANUS2() },
@@ -31,18 +30,18 @@ const cmd_t* make_setup_tallahart_up(void) {
 
     uint8_t n = 0;
 
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint8_t i = 0; i < 3; i++) {
+        for (uint8_t j = 0; j < try_len; j++) {
+            _setup_up_buf[n++] = c_try[i][j];
+        }
         _setup_up_buf[n++] = c_tap_up[0];
         _setup_up_buf[n++] = c_wait_up[0];
         if (rand() % 2) {
             _setup_up_buf[n++] = c_tap_up[0];
             _setup_up_buf[n++] = c_wait_up[0];
         }
-        if (i < 3) {
+        if (i < 2) {
             _setup_up_buf[n++] = c_wait_janus[0];
-            for (uint8_t j = 0; j < try_len; j++) {
-                _setup_up_buf[n++] = c_try[i][j];
-            }
         }
     }
     _setup_up_buf[n++] = c_end[0];
@@ -78,15 +77,17 @@ const cmd_t* make_setup_tallahart_reset(void) {
     uint8_t n = 0;
 
     for (uint8_t i = 0; i < 3; i++) {
-        _setup_reset_buf[n++] = c_tap_up[0];
-        _setup_reset_buf[n++] = c_wait_up[0];
-        if (rand() % 2) {
-            _setup_reset_buf[n++] = c_tap_up[0];
-            _setup_reset_buf[n++] = c_wait_up[0];
-        }
-        _setup_reset_buf[n++] = c_wait_janus[0];
         for (uint8_t j = 0; j < try_len; j++) {
             _setup_reset_buf[n++] = c_try[i][j];
+        }
+        if (i < 2) {
+            _setup_reset_buf[n++] = c_tap_up[0];
+            _setup_reset_buf[n++] = c_wait_up[0];
+            if (rand() % 2) {
+                _setup_reset_buf[n++] = c_tap_up[0];
+                _setup_reset_buf[n++] = c_wait_up[0];
+            }
+            _setup_reset_buf[n++] = c_wait_janus[0];
         }
     }
 

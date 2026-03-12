@@ -199,7 +199,7 @@ void matrix_scan_user(void) {
         } else if (timer_elapsed32(last_loot_time_ms) >= random_range(LOOT_INTERVAL_MS, 80, 100)) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> loot (interval elapsed)\n");
-            runner_start(&runner, LOOT_FULL, MODE_LOOT);
+            runner_start(&runner, make_loot_full(), MODE_LOOT);
         } else if (timer_elapsed32(last_buff_time_ms) >= random_range(BUFF_INTERVAL_MS, 70, 100)) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> buff (interval elapsed)\n");
