@@ -81,6 +81,7 @@ bool janus2(void);
 bool janus3(void);
 bool teleport_setup(void);
 bool boss_buffs(void);
+bool guild_buff(void);
 
 // ---------------------------------------------------------------------------
 // TRY_* macros  –  call + cast delay (only if fired)
@@ -96,3 +97,4 @@ bool boss_buffs(void);
 #define TRY_JANUS3()          CALL_NAMED("janus3", janus3),         SKIP_FALSE(1), WAIT_JITTER_UP_D(650)
 #define TRY_TELEPORT_SETUP()  CALL_NAMED("teleport_setup", teleport_setup), SKIP_FALSE(1), WAIT_JITTER_UP_D(675)
 #define TRY_BOSS_BUFFS()      CALL_NAMED("boss_buffs", boss_buffs), SKIP_FALSE(1), WAIT_JITTER_UP_D(1500)
+#define TRY_GUILD_BUFF()      CALL_NAMED("guild_buff", guild_buff), SKIP_FALSE(1), WAIT_JITTER_UP_D(1500)

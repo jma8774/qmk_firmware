@@ -6,5 +6,6 @@
 const cmd_t BUFF_SCRIPT[] = {
     TRY_TELEPORT_SETUP(),
     TRY_BOSS_BUFFS(),
+    TRY_GUILD_BUFF(),
     END(),
 };

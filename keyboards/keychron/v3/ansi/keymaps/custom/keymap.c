@@ -79,6 +79,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ---------------------------------------------------------------------------
 
 static bool      running             = false;
+static uint32_t  running_start_time_ms = 0;
 static runner_t  runner              = {0};
 static uint32_t  last_setup_time_ms  = 0;
 static uint32_t  last_loot_time_ms   = 0;
@@ -107,6 +108,12 @@ static bool      end_wait_active     = false;
 #define BUFF_INTERVAL_MS    15000  // 15 seconds
 #define HUMAN_INTERVAL_MS  600000  // up to 10 minutes (random_range pulls down to 90 s)
 
+// Returns true while the script has been running for less than one full loot
+// interval — suppresses the immediate loot trigger on a fresh start.
+static bool just_started(void) {
+    return timer_elapsed32(running_start_time_ms) < LOOT_INTERVAL_MS;
+}
+
 // ---------------------------------------------------------------------------
 // keyboard_post_init_user  –  seed RNG once at boot
 // ---------------------------------------------------------------------------
@@ -128,7 +135,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed && !running) {
                 // RUN ON
                 uprintf("Running...\n");
-                running            = true;
+                running                = true;
+                running_start_time_ms  = timer_read32();
                 runner_start(&runner, BUFF_SCRIPT, MODE_ROTATION);
             }
             return false;  // no OS key output
@@ -196,7 +204,7 @@ void matrix_scan_user(void) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> setup (interval elapsed)\n");
             runner_start(&runner, make_setup_tallahart(), MODE_SETUP);
-        } else if (timer_elapsed32(last_loot_time_ms) >= random_range(LOOT_INTERVAL_MS, 75, 100)) {
+        } else if (!just_started() && timer_elapsed32(last_loot_time_ms) >= random_range(LOOT_INTERVAL_MS, 75, 100)) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> loot (interval elapsed)\n");
             runner_start(&runner, make_loot_full(), MODE_LOOT);
@@ -204,10 +212,10 @@ void matrix_scan_user(void) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> buff (interval elapsed)\n");
             runner_start(&runner, BUFF_SCRIPT, MODE_BUFF);
-        } else if (timer_elapsed32(last_human_time_ms) >= random_range(HUMAN_INTERVAL_MS, 15, 100)) {
-            rotation_cooldown_active = false;
-            uprintf("[scan] rotation -> human (interval elapsed)\n");
-            runner_start(&runner, make_random_human(), MODE_HUMAN);
+        // } else if (timer_elapsed32(last_human_time_ms) >= random_range(HUMAN_INTERVAL_MS, 15, 100)) {
+        //     rotation_cooldown_active = false;
+        //     uprintf("[scan] rotation -> human (interval elapsed)\n");
+        //     runner_start(&runner, make_random_human(), MODE_HUMAN);
         } else if (timer_expired32(timer_read32(), rotation_cooldown_until_ms)) {
             rotation_cooldown_active = false;
             uprintf("[scan] cooldown done -> rotation\n");
@@ -229,10 +237,10 @@ void matrix_scan_user(void) {
         uprintf("[scan] buff done -> rotation\n");
         last_buff_time_ms = timer_read32();
         runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
-    } else if (runner.mode == MODE_HUMAN) {
-        uprintf("\n");
-        uprintf("[scan] human done -> rotation\n");
-        last_human_time_ms = timer_read32();
-        runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
+    // } else if (runner.mode == MODE_HUMAN) {
+    //     uprintf("\n");
+    //     uprintf("[scan] human done -> rotation\n");
+    //     last_human_time_ms = timer_read32();
+    //     runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
     }
 }

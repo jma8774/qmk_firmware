@@ -127,3 +127,14 @@ static uint32_t cd_boss_buffs = 0;
 bool boss_buffs(void) {
     return cooldown_tap(&cd_boss_buffs, BOSS_BUFFS_CD_MS, BOSS_BUFFS_KEY);
 }
+
+// ---------------------------------------------------------------------------
+// Guild buff  –  F1 key, 15–30 min cooldown
+// ---------------------------------------------------------------------------
+
+#define GUILD_BUFF_KEY      KC_F1
+#define GUILD_BUFF_CD_MS 1800000   // max; range 50–100% => 15–30 min
+static uint32_t cd_guild_buff = 0;
+bool guild_buff(void) {
+    return cooldown_tap(&cd_guild_buff, random_range(GUILD_BUFF_CD_MS, 50, 100), GUILD_BUFF_KEY);
+}
