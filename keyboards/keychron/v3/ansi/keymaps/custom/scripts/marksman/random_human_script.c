@@ -72,6 +72,7 @@ const cmd_t HUMAN_4[] = {
     WAIT_JITTER_UP_D(700),
     DASH(),
     JUMP_ATTACK(),
+    WAIT_JITTER_UP_D(600),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -82,6 +83,7 @@ const cmd_t HUMAN_5[] = {
     JUMP_ATTACK(),
     ROPE(),
     JUMP_ATTACK(),
+    WAIT_JITTER_UP_D(600),
     TELEPORT_RESET_2X(),
     END(),
 };
