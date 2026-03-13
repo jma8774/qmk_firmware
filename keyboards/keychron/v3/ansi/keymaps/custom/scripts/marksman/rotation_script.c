@@ -68,21 +68,28 @@ const cmd_t ROTATION_TALLAHART_BOLT_BURST_3[] = {
 };
 
 const cmd_t ROTATION_TALLAHART_JUMP_ATTACK[] = {
+    FLASH_UP(),
     JUMP_ATTACK(),
+    SHOOT(),
+    WAIT_JITTER_UP_D(200),
     TELEPORT_RESET_2X(),
     END(),
 };
 
 const cmd_t ROTATION_TALLAHART_JUMP_ATTACK_1[] = {
     SHOOT(),
+    DASH(),
     JUMP_ATTACK(),
+    WAIT_JITTER_UP_D(400),
     TELEPORT_RESET_2X(),
     END(),
 };
 
 const cmd_t ROTATION_TALLAHART_JUMP_ATTACK_2[] = {
     JUMP_GROUND(),
+    DASH(),
     JUMP_ATTACK(),
+    WAIT_JITTER_UP_D(400),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -90,6 +97,7 @@ const cmd_t ROTATION_TALLAHART_JUMP_ATTACK_2[] = {
 const cmd_t ROTATION_TALLAHART_DASH[] = {
     DASH(),
     SHOOT(),
+    WAIT_JITTER_UP_D(200),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -97,6 +105,7 @@ const cmd_t ROTATION_TALLAHART_DASH[] = {
 const cmd_t ROTATION_TALLAHART_DASH_1[] = {
     DASH(),
     TRY_BOLT_BURST(),
+    WAIT_JITTER_UP_D(300),
     TELEPORT_RESET_2X(),
     END(),
 };
