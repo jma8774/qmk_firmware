@@ -11,6 +11,8 @@ extern const cmd_t HUMAN_3[];
 extern const cmd_t HUMAN_4[];
 extern const cmd_t HUMAN_5[];
 extern const cmd_t HUMAN_6[];
+extern const cmd_t HUMAN_7[];
+extern const cmd_t HUMAN_8[];
 
 // Returns a randomly selected human-like script each call.
 const cmd_t* make_random_human(void);

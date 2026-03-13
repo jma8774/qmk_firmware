@@ -101,6 +101,32 @@ const cmd_t HUMAN_6[] = {
     END(),
 };
 
+const cmd_t HUMAN_7[] = {
+    TAP(KC_UP),
+    WAIT_JITTER_UP_D(400),
+    SHOOT(),
+    ROPE_DELAY(1000),
+    JUMP_ATTACK(),
+    JUMP_DOWN(),
+    SHOOT(),
+    WALK_RIGHT(700),
+    TELEPORT_RESET_2X(),
+    END(),
+};
+
+const cmd_t HUMAN_8[] = {
+    TAP(KC_UP),
+    WAIT_JITTER_UP_D(400),
+    TAP(KC_UP),
+    WAIT_JITTER_UP_D(400),
+    TRY_BOLT_BURST(),
+    WALK_LEFT(500),
+    JUMP_ATTACK(),
+    DASH(),
+    WALK_RIGHT(600),
+    TELEPORT_RESET_2X(),
+    END(),
+};
 // ---------------------------------------------------------------------------
 // Weighted picker
 // ---------------------------------------------------------------------------
@@ -118,6 +144,8 @@ const cmd_t* make_random_human(void) {
         { HUMAN_4, 1 },
         { HUMAN_5, 1 },
         { HUMAN_6, 1 },
+        { HUMAN_7, 1 },
+        { HUMAN_8, 1 },
     };
     static const uint8_t count = sizeof(table) / sizeof(table[0]);
 
