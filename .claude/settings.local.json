@@ -6,7 +6,8 @@
       "Bash(git commit:*)",
       "Bash(python3:*)",
       "Bash(python:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Skill(commit-summarizer)"
     ]
   }
 }

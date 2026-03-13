@@ -21,6 +21,7 @@
 #define TELEPORT_RESET_2X()      TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_UP_D(650)
 
 #define FLASH_JUMP()             TAP(KC_E), WAIT_JITTER_UP_D(100), TAP(KC_E), WAIT_JITTER_UP(580, 5)
+#define FLASH_UP()               PRESS(KC_UP), WAIT_JITTER_UP_D(70), TAP(KC_E), WAIT_JITTER_UP_D(100), TAP(KC_E), WAIT_JITTER_D(70), RELEASE(KC_UP), WAIT_JITTER_UP(580, 5)
 
 #define JUMP_ATTACK()            TAP(KC_E), WAIT_JITTER_UP_D(100),         \
                                  PRESS(KC_E), WAIT_JITTER_D(60),           \

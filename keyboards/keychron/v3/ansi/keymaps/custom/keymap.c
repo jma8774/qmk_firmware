@@ -98,7 +98,7 @@ static bool      end_wait_active     = false;
 //  Setup      SETUP_INTERVAL_MS = 120 s   random_range(120000,83,100)  100  – 120 s
 //  Loot       LOOT_INTERVAL_MS  = 80 s    random_range(80000, 75,100)  60   – 80 s
 //  Buff       BUFF_INTERVAL_MS  = 15 s    random_range(15000, 70,100)  10.5 – 15 s
-//  Human      HUMAN_INTERVAL_MS = 600 s   random_range(600000,15,100)  90   – 600 s
+//  Human      HUMAN_INTERVAL_MS = 160 s   random_range(160000,56,100)  90   – 160 s
 //  Rotation   (cooldown only)             random_range(8500,  71,100)  6    – 8.5 s
 //  End pause  (after every script)        jitter(70, 20)               56   – 84 ms
 // ---------------------------------------------------------------------------
@@ -106,7 +106,7 @@ static bool      end_wait_active     = false;
 #define SETUP_INTERVAL_MS  120000  // 120 seconds
 #define LOOT_INTERVAL_MS    80000  // 80 seconds
 #define BUFF_INTERVAL_MS    15000  // 15 seconds
-#define HUMAN_INTERVAL_MS  600000  // up to 10 minutes (random_range pulls down to 90 s)
+#define HUMAN_INTERVAL_MS  160000  // 160 seconds
 
 // Returns true while the script has been running for less than one full loot
 // interval — suppresses the immediate loot trigger on a fresh start.
@@ -212,10 +212,10 @@ void matrix_scan_user(void) {
             rotation_cooldown_active = false;
             uprintf("[scan] rotation -> buff (interval elapsed)\n");
             runner_start(&runner, BUFF_SCRIPT, MODE_BUFF);
-        // } else if (timer_elapsed32(last_human_time_ms) >= random_range(HUMAN_INTERVAL_MS, 15, 100)) {
-        //     rotation_cooldown_active = false;
-        //     uprintf("[scan] rotation -> human (interval elapsed)\n");
-        //     runner_start(&runner, make_random_human(), MODE_HUMAN);
+        } else if (timer_elapsed32(last_human_time_ms) >= random_range(HUMAN_INTERVAL_MS, 56, 100)) {
+            rotation_cooldown_active = false;
+            uprintf("[scan] rotation -> human (interval elapsed)\n");
+            runner_start(&runner, make_random_human(), MODE_HUMAN);
         } else if (timer_expired32(timer_read32(), rotation_cooldown_until_ms)) {
             rotation_cooldown_active = false;
             uprintf("[scan] cooldown done -> rotation\n");
@@ -237,10 +237,10 @@ void matrix_scan_user(void) {
         uprintf("[scan] buff done -> rotation\n");
         last_buff_time_ms = timer_read32();
         runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
-    // } else if (runner.mode == MODE_HUMAN) {
-    //     uprintf("\n");
-    //     uprintf("[scan] human done -> rotation\n");
-    //     last_human_time_ms = timer_read32();
-    //     runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
+    } else if (runner.mode == MODE_HUMAN) {
+        uprintf("\n");
+        uprintf("[scan] human done -> rotation\n");
+        last_human_time_ms = timer_read32();
+        runner_start(&runner, make_rotation_tallahart(), MODE_ROTATION);
     }
 }
