@@ -26,6 +26,7 @@
 #include "scripts/marksman/buff_script.h"
 #include "scripts/marksman/random_human_script.h"
 #include "scripts/marksman/limbo_script.h"
+#include "scripts/marksman/cubing_script.h"
 
 // clang-format off
 
@@ -79,8 +80,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Script engine state
 // ---------------------------------------------------------------------------
 
-typedef enum { BOT_TALLAHART, BOT_LIMBO, BOT_MODE_COUNT } bot_mode_t;
-static const char* const BOT_MODE_NAMES[] = { "tallahart", "limbo" };
+typedef enum { BOT_TALLAHART, BOT_LIMBO, BOT_CUBING, BOT_MODE_COUNT } bot_mode_t;
+static const char* const BOT_MODE_NAMES[] = { "tallahart", "limbo", "cubing" };
 
 static bool      running             = false;
 static bot_mode_t bot_mode           = BOT_TALLAHART;
@@ -149,7 +150,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 running                = true;
                 running_start_time_ms  = timer_read32();
                 switch (bot_mode) {
-                    case BOT_LIMBO:      runner_start(&runner, LIMBO_SCRIPT, MODE_ROTATION); break;
+                    case BOT_LIMBO:      runner_start(&runner, LIMBO_SCRIPT,  MODE_ROTATION); break;
+                    case BOT_CUBING:     runner_start(&runner, CUBING_SCRIPT, MODE_ROTATION); break;
                     default:             runner_start(&runner, BUFF_SCRIPT,  MODE_ROTATION); break;
                 }
             }
@@ -189,9 +191,10 @@ void matrix_scan_user(void) {
     runner_task(&runner);
 
     // Limbo mode: just loop LIMBO_SCRIPT forever, skip all other logic
-    if (bot_mode == BOT_LIMBO) {
+    if (bot_mode == BOT_LIMBO || bot_mode == BOT_CUBING) {
         if (!runner.active) {
-            runner_start(&runner, LIMBO_SCRIPT, MODE_ROTATION);
+            const cmd_t *s = (bot_mode == BOT_CUBING) ? CUBING_SCRIPT : LIMBO_SCRIPT;
+            runner_start(&runner, s, MODE_ROTATION);
         }
         return;
     }
