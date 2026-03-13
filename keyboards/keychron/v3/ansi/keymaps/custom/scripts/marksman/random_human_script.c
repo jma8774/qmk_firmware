@@ -6,32 +6,32 @@
 #include "job.h"
 
 // Buddy list  ("-" key toggles open/close)
-static const cmd_t HUMAN_BUDDY_LIST[] = {
-    TAP(KC_MINS), WAIT_JITTER_UP(1500, 100),
-    TAP(KC_MINS), WAIT_JITTER_UP_D(200),
-    END(),
-};
+// static const cmd_t HUMAN_BUDDY_LIST[] = {
+//     TAP(KC_MINS), WAIT_JITTER_UP(1500, 100),
+//     TAP(KC_MINS), WAIT_JITTER_UP_D(200),
+//     END(),
+// };
 
 // Quests  ("0" key)
-static const cmd_t HUMAN_QUESTS[] = {
-    TAP(KC_0), WAIT_JITTER_UP(1500, 100),
-    TAP(KC_0), WAIT_JITTER_UP_D(200),
-    END(),
-};
+// static const cmd_t HUMAN_QUESTS[] = {
+//     TAP(KC_0), WAIT_JITTER_UP(1500, 100),
+//     TAP(KC_0), WAIT_JITTER_UP_D(200),
+//     END(),
+// };
 
 // Guild UI  ("g" key)
-static const cmd_t HUMAN_GUILD[] = {
-    TAP(KC_G), WAIT_JITTER_UP(1500, 100),
-    TAP(KC_G), WAIT_JITTER_UP_D(200),
-    END(),
-};
+// static const cmd_t HUMAN_GUILD[] = {
+//     TAP(KC_G), WAIT_JITTER_UP(1500, 100),
+//     TAP(KC_G), WAIT_JITTER_UP_D(200),
+//     END(),
+// };
 
 // Skills  ("k" key)
-static const cmd_t HUMAN_SKILLS[] = {
-    TAP(KC_K), WAIT_JITTER_UP(1500, 100),
-    TAP(KC_K), WAIT_JITTER_UP_D(200),
-    END(),
-};
+// static const cmd_t HUMAN_SKILLS[] = {
+//     TAP(KC_K), WAIT_JITTER_UP(1500, 100),
+//     TAP(KC_K), WAIT_JITTER_UP_D(200),
+//     END(),
+// };
 
 const cmd_t HUMAN_1[] = {
     DASH(),
