@@ -17,8 +17,16 @@
 #define JUMP()                   TAP(KC_E), WAIT_JITTER_UP_20(70)
 #define JUMP_DELAY(ms)           TAP(KC_E), WAIT_JITTER_D(ms)
 #define JUMP_GROUND()            TAP(KC_E), WAIT_JITTER_UP_D(680)
-#define TELEPORT_RESET()         TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_UP_D(650)
-#define TELEPORT_RESET_2X()      TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_UP_D(650)
+// 10% = 1 tap, 60% = 2 taps, 30% = 3 taps
+#define TELEPORT_RESET()         TAP(KC_X), WAIT_JITTER_D(70),   \
+                                 CHANCE(90),                      \
+                                 SKIP_FALSE(5),                   \
+                                 TAP(KC_X), WAIT_JITTER_D(70),   \
+                                 CHANCE(33),                      \
+                                 SKIP_FALSE(1),                   \
+                                 TAP(KC_X), /* noqa */            \
+                                 WAIT_JITTER_UP_D(650)
+#define TELEPORT_RESET_2X()      TAP(KC_X), WAIT_JITTER_D(70), TAP(KC_X), WAIT_JITTER_UP_D(650)
 
 #define FLASH_JUMP()             TAP(KC_E), WAIT_JITTER_UP_D(100), TAP(KC_E), WAIT_JITTER_UP(580, 5)
 #define FLASH_UP()               PRESS(KC_UP), WAIT_JITTER_UP_D(70), TAP(KC_E), WAIT_JITTER_UP_D(100), TAP(KC_E), WAIT_JITTER_D(70), RELEASE(KC_UP), WAIT_JITTER_UP(580, 5)

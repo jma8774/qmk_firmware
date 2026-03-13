@@ -13,7 +13,7 @@ const cmd_t LOOT_EMPTY[] = {
 //
 // Walks 2 UP positions; each UP tap may randomly get an extra UP after it
 // (50% chance per position).  Buffer worst case: 2×(tap+wait+tap+wait+loot)
-// + TELEPORT_RESET_2X (6) + END (1) = 17 entries.
+// + TELEPORT_RESET_2X (4) + END (1) = 15 entries.
 // ---------------------------------------------------------------------------
 
 static cmd_t _loot_full_buf[20];

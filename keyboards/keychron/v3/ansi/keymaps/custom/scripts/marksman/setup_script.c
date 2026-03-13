@@ -52,8 +52,10 @@ const cmd_t* make_setup_tallahart_up(void) {
 // ---------------------------------------------------------------------------
 // Random RESET variant builder
 //
-// Same optional-double-UP logic for the 3 UP taps, plus a random choice
-// between TELEPORT_RESET (2x X) and TELEPORT_RESET_2X (3x X) at the end.
+// Same optional-double-UP logic for the first 2 UP sets, plus a random choice
+// between TELEPORT_RESET (probabilistic 1/2/3 taps, 10 cmds) and
+// TELEPORT_RESET_2X (fixed 2 taps, 4 cmds) at the end.
+// Buffer worst case: 3×TRY_JANUS(3) + 2×(tap+wait+tap+wait+janus) + TELEPORT_RESET(10) + END = 30
 // ---------------------------------------------------------------------------
 
 static cmd_t _setup_reset_buf[40];
