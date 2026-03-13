@@ -25,6 +25,7 @@
 #include "scripts/marksman/loot_script.h"
 #include "scripts/marksman/buff_script.h"
 #include "scripts/marksman/random_human_script.h"
+#include "scripts/marksman/limbo_script.h"
 
 // clang-format off
 
@@ -78,7 +79,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Script engine state
 // ---------------------------------------------------------------------------
 
+typedef enum { BOT_TALLAHART, BOT_LIMBO, BOT_MODE_COUNT } bot_mode_t;
+static const char* const BOT_MODE_NAMES[] = { "tallahart", "limbo" };
+
 static bool      running             = false;
+static bot_mode_t bot_mode           = BOT_TALLAHART;
 static uint32_t  running_start_time_ms = 0;
 static runner_t  runner              = {0};
 static uint32_t  last_setup_time_ms  = 0;
@@ -131,13 +136,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         uprintf("Key down: %d\n", keycode);
     }
     switch (keycode) {
+        case KC_F9:
+            if (record->event.pressed && !running) {
+                bot_mode = (bot_mode_t)((bot_mode + 1) % BOT_MODE_COUNT);
+                uprintf("Mode: %s\n", BOT_MODE_NAMES[bot_mode]);
+            }
+            return false;
         case KC_F7:
             if (record->event.pressed && !running) {
                 // RUN ON
-                uprintf("Running...\n");
+                uprintf("Running... (%s)\n", BOT_MODE_NAMES[bot_mode]);
                 running                = true;
                 running_start_time_ms  = timer_read32();
-                runner_start(&runner, BUFF_SCRIPT, MODE_ROTATION);
+                switch (bot_mode) {
+                    case BOT_LIMBO:      runner_start(&runner, LIMBO_SCRIPT, MODE_ROTATION); break;
+                    default:             runner_start(&runner, BUFF_SCRIPT,  MODE_ROTATION); break;
+                }
             }
             return false;  // no OS key output
         case KC_F8:
@@ -173,6 +187,14 @@ void matrix_scan_user(void) {
 
     // Advance the runner
     runner_task(&runner);
+
+    // Limbo mode: just loop LIMBO_SCRIPT forever, skip all other logic
+    if (bot_mode == BOT_LIMBO) {
+        if (!runner.active) {
+            runner_start(&runner, LIMBO_SCRIPT, MODE_ROTATION);
+        }
+        return;
+    }
 
     // If still executing, nothing to decide yet
     if (runner.active) {

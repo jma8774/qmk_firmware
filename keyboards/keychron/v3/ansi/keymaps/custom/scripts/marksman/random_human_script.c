@@ -109,7 +109,6 @@ const cmd_t HUMAN_7[] = {
     SHOOT(),
     ROPE_DELAY(1000),
     JUMP_ATTACK(),
-    JUMP_DOWN(),
     SHOOT(),
     WALK_RIGHT(700),
     WAIT_JITTER_UP_D(100),
