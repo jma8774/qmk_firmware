@@ -37,7 +37,7 @@ const cmd_t HUMAN_1[] = {
     DASH(),
     JUMP_ATTACK(),
     WALK_RIGHT(400),
-    WAIT_JITTER_UP_D(100),
+    WAIT_JITTER_UP_D(200),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -49,7 +49,7 @@ const cmd_t HUMAN_2[] = {
     WAIT_JITTER_UP_D(100),
     WALK_RIGHT(200),
     SHOOT(),
-    WAIT_JITTER_UP_D(100),
+    WAIT_JITTER_UP_D(200),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -62,7 +62,7 @@ const cmd_t HUMAN_3[] = {
     WAIT_JITTER_UP_D(500),
     WALK_RIGHT(600),
     SHOOT(),
-    WAIT_JITTER_UP_D(100),
+    WAIT_JITTER_UP_D(200),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -74,7 +74,7 @@ const cmd_t HUMAN_4[] = {
     WAIT_JITTER_UP_D(700),
     DASH(),
     JUMP_ATTACK(),
-    WAIT_JITTER_UP_D(600),
+    WAIT_JITTER_UP_D(750),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -85,7 +85,7 @@ const cmd_t HUMAN_5[] = {
     JUMP_ATTACK(),
     ROPE(),
     JUMP_ATTACK(),
-    WAIT_JITTER_UP_D(600),
+    WAIT_JITTER_UP_D(750),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -98,7 +98,7 @@ const cmd_t HUMAN_6[] = {
     SHOOT(),
     WALK_RIGHT(600),
     JUMP_ATTACK(),
-    WAIT_JITTER_UP_D(700),
+    WAIT_JITTER_UP_D(750),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -111,7 +111,7 @@ const cmd_t HUMAN_7[] = {
     JUMP_ATTACK(),
     SHOOT(),
     WALK_RIGHT(700),
-    WAIT_JITTER_UP_D(100),
+    WAIT_JITTER_UP_D(200),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -126,7 +126,7 @@ const cmd_t HUMAN_8[] = {
     JUMP_ATTACK(),
     DASH(),
     WALK_RIGHT(600),
-    WAIT_JITTER_UP_D(100),
+    WAIT_JITTER_UP_D(200),
     TELEPORT_RESET_2X(),
     END(),
 };
