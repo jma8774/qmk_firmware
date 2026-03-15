@@ -105,11 +105,11 @@ bool teleport_setup(void) {
 
     register_code(KC_DOWN);
     wait_ms(jitter(100, 20));
-    tap_code_delay(KC_X, jitter(60, 20));
+    tap_code_delay(KC_X, jitter_up(60, 30));
     wait_ms(jitter(60, 20));
-    tap_code_delay(KC_X, jitter(60, 20));
+    tap_code_delay(KC_X, jitter_up(60, 30));
     wait_ms(jitter(60, 20));
-    tap_code_delay(KC_X, jitter(60, 20));
+    tap_code_delay(KC_X, jitter_up(60, 30));
     wait_ms(jitter(70, 20));
     unregister_code(KC_DOWN);
 
@@ -126,6 +126,28 @@ bool teleport_setup(void) {
 static uint32_t cd_boss_buffs = 0;
 bool boss_buffs(void) {
     return cooldown_tap(&cd_boss_buffs, BOSS_BUFFS_CD_MS, BOSS_BUFFS_KEY);
+}
+
+// ---------------------------------------------------------------------------
+// Check familiars  –  F11 key, 1.5–3 min cooldown
+// ---------------------------------------------------------------------------
+// Opens familiar UI (F11), waits 1–2 s, closes it (F11 again).
+
+#define CHECK_FAMILIARS_KEY    KC_F11
+#define CHECK_FAMILIARS_CD_MS  180000  // max; range 50–100% => 1.5–3 min
+
+static uint32_t cd_check_familiars = 0;
+
+bool check_familiars(void) {
+    uint32_t now = timer_read32();
+    if (!timer_expired32(now, cd_check_familiars)) return false;
+
+    tap_code_delay(CHECK_FAMILIARS_KEY, jitter_up(60, 30));
+    wait_ms(random_range(3000, 50, 100));   // 1.5s - 3s look time
+    tap_code_delay(CHECK_FAMILIARS_KEY, jitter_up(60, 30));
+
+    cd_check_familiars = now + random_range(CHECK_FAMILIARS_CD_MS, 50, 100);
+    return true;
 }
 
 // ---------------------------------------------------------------------------
