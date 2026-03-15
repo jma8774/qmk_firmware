@@ -111,7 +111,8 @@ const cmd_t HUMAN_7[] = {
     JUMP_ATTACK(),
     SHOOT(),
     WALK_RIGHT(700),
-    WAIT_JITTER_UP_D(200),
+    SHOOT(),
+    WAIT_JITTER_UP_D(300),
     TELEPORT_RESET_2X(),
     END(),
 };
@@ -126,7 +127,8 @@ const cmd_t HUMAN_8[] = {
     JUMP_ATTACK(),
     DASH(),
     WALK_RIGHT(600),
-    WAIT_JITTER_UP_D(200),
+    SHOOT(),
+    WAIT_JITTER_UP_D(250),
     TELEPORT_RESET_2X(),
     END(),
 };
