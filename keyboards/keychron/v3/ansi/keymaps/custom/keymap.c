@@ -95,6 +95,7 @@ static uint32_t  rotation_cooldown_until_ms = 0;
 static bool      rotation_cooldown_active   = false;
 static uint32_t  end_wait_until_ms   = 0;
 static bool      end_wait_active     = false;
+static bool      cubing_paused       = false;
 
 // ---------------------------------------------------------------------------
 // Script intervals and timing summary
@@ -148,6 +149,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 // RUN ON
                 uprintf("Running... (%s)\n", BOT_MODE_NAMES[bot_mode]);
                 running                = true;
+                cubing_paused          = false;
                 running_start_time_ms  = timer_read32();
                 switch (bot_mode) {
                     case BOT_LIMBO:      runner_start(&runner, LIMBO_SCRIPT,  MODE_ROTATION); break;
@@ -174,6 +176,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;  // no OS key output
+        case KC_SPC:
+            if (record->event.pressed && running && bot_mode == BOT_CUBING && !cubing_paused) {
+                cubing_paused = true;
+                runner_stop(&runner);
+                uprintf("Cubing paused\n");
+                return false;
+            }
+            return true;
         default:
             return true;
     }
@@ -190,8 +200,9 @@ void matrix_scan_user(void) {
     // Advance the runner
     runner_task(&runner);
 
-    // Limbo mode: just loop LIMBO_SCRIPT forever, skip all other logic
+    // Limbo/cubing mode: just loop forever, skip all other logic
     if (bot_mode == BOT_LIMBO || bot_mode == BOT_CUBING) {
+        if (cubing_paused) return;
         if (!runner.active) {
             const cmd_t *s = (bot_mode == BOT_CUBING) ? CUBING_SCRIPT : LIMBO_SCRIPT;
             runner_start(&runner, s, MODE_ROTATION);
