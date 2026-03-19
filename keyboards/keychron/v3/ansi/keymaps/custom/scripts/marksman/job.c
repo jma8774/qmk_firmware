@@ -151,12 +151,12 @@ bool check_familiars(void) {
 }
 
 // ---------------------------------------------------------------------------
-// Guild buff  –  F1 key, 15–30 min cooldown
+// Guild buff  –  F1 key, x-32 mins cooldown
 // ---------------------------------------------------------------------------
 
 #define GUILD_BUFF_KEY      KC_F1
-#define GUILD_BUFF_CD_MS 1800000   // max; range 50–100% => 15–30 min
+#define GUILD_BUFF_CD_MS 1920000   // max; range 95–100% => x-32 mins
 static uint32_t cd_guild_buff = 0;
 bool guild_buff(void) {
-    return cooldown_tap(&cd_guild_buff, random_range(GUILD_BUFF_CD_MS, 50, 100), GUILD_BUFF_KEY);
+    return cooldown_tap(&cd_guild_buff, random_range(GUILD_BUFF_CD_MS, 95, 100), GUILD_BUFF_KEY);
 }
