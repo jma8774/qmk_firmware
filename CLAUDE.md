@@ -1,5 +1,15 @@
 # CLAUDE.md — QMK Firmware (Keychron V3, custom keymap)
 
+## Scope — IMPORTANT
+
+This is a large QMK monorepo. **Only the following paths are relevant — never search, grep, or read outside them:**
+
+- `keyboards/keychron/v3/ansi/keymaps/custom/` — all custom keymap code
+- `lint_c_delays.py` — the linter script (repo root)
+- `monitor_keys.py` — the key monitor script (repo root)
+
+Do **not** explore other keyboards, keymaps, QMK core files, or any other directory. If a task seems to require something outside these paths, ask the user before proceeding.
+
 ## Project overview
 
 This is a QMK firmware repo for the **Keychron V3 TKL (ANSI)** keyboard. The primary custom code lives at:
